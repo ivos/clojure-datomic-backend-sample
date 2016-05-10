@@ -1,3 +1,4 @@
 {
  :uri "datomic:free://localhost:4334/backend"
+; :uri "datomic:mem://backend"
 }

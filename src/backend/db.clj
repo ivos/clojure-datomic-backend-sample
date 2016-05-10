@@ -2,7 +2,7 @@
   (:require [io.rkn.conformity :as c]
             [datomic.api :as d]
             [clojure.tools.logging :as log]
-            [backend.resources :as resources]
+            [backend.resources :refer [list-resources]]
             ))
 
 (defn delete-database!
@@ -14,17 +14,20 @@
   [name]
   (-> name
     (.split "/")
-    (last)
+    last
     (.split "\\.")
-    (first)
-    (keyword)))
+    first
+    keyword))
 
-(defn- wrapped-norm-content [name]
+(defn- wrapped-norm-content
+  [name]
   {(norm-key name)
    {:txes [(c/read-resource name)]}})
 
-(defn migrate [conn]
-  (let [names (resources/list-resources "db/migrations/")
+(defn migrate!
+  [uri]
+  (let [conn (d/connect uri)
+        names (list-resources "db/migrations/")
         norms-map (apply merge (map wrapped-norm-content names))
         applied (c/ensure-conforms conn norms-map)
         ]
@@ -32,9 +35,8 @@
     (log/debug "Migrations applied:" (map :norm-name applied))
     ))
 
-(defn start!
+(defn start-database!
   "Connect to the database and migrate it."
   [uri]
   (d/create-database uri)
-  (let [conn (d/connect uri)]
-    (migrate conn)))
+  (migrate! uri))

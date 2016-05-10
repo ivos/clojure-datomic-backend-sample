@@ -1,5 +1,5 @@
 (ns backend.resources
-  (:require [clojure.java.io :as io]))
+  (:require [clojure.java.io :refer [resource file]]))
 
 (def ^:private current-running-jar
   (-> :keyword class (.. getProtectionDomain getCodeSource getLocation getPath)))
@@ -23,17 +23,15 @@
 
 (defn- list-dir-resources
   [path]
-  (let [files (-> path (io/resource) (io/file) (.listFiles))
+  (let [files (-> path resource file (.listFiles))
         names (map #(->> % .getName (str path)) files)]
     names))
 
 (defn list-resources
   [path]
-  (let [resource (io/resource path)]
+  (let [resource (resource path)]
     (if (not resource)
       (throw (RuntimeException. (str "Resource not found: " path)))
       (case (.getProtocol resource)
         "jar"  (list-jar-resources path)
-        "file" (list-dir-resources path)
-        ))
-    ))
+        "file" (list-dir-resources path)))))

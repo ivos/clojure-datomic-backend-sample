@@ -1,14 +1,22 @@
 (ns backend.app
   (:gen-class)
-  (:require [backend.db :as db]))
+  (:require [clojure.java.io :refer [resource]]
+            [clojure.edn :as edn]
+            [clojure.tools.logging :as log]
+            [backend.db :refer :all]
+            [backend.router :refer :all]))
 
-(def uri "datomic:free://localhost:4334/backend")
-;(def uri "datomic:mem://backend")
+(def db-config (-> "db-config.edn" resource slurp edn/read-string))
+(def router-config (-> "router-config.edn" resource slurp edn/read-string))
 
 (defn -main
   [& args]
 
-;  (db/delete-database! uri)  
-  (db/start! uri)  
-  (println "Hello, World 3!")
+  (println "Resource" (resource "db-config.edn"))
+  (println "Content" (slurp (resource "db-config.edn")))
+  (println "URI" (:uri (slurp (resource "db-config.edn"))))
+  (println "URI passed" (:uri db-config))
+
+  (start-database! (:uri db-config))
+  (start-router! router-config)
   )

@@ -4,6 +4,8 @@
             [ring.adapter.jetty :refer [run-jetty]]
             [ring.middleware.params :refer :all]
             [ring.middleware.keyword-params :refer :all]
+            [datomic.api :as d]
+            [backend.config :refer :all]
             [backend.project :refer :all]
             ))
 
@@ -12,11 +14,19 @@
   (POST "/projects" request (project-create request))
   (route/not-found "Page not found"))
 
+(defn wrap-connection [handler]
+  (fn [request]
+    (let [uri (:uri db-config)
+          conn (d/connect uri)
+          request-wrapped (assoc request :connection conn)]
+      (handler request-wrapped))))
+
 (def handler
   (-> route-handler
-      (wrap-keyword-params)
-      (wrap-params)
-      ))
+    (wrap-connection)
+    (wrap-keyword-params)
+    (wrap-params)
+    ))
 
 (defn start-router!
   "Start HTTP server."

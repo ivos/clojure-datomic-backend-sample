@@ -3,11 +3,9 @@
             [datomic.api :as d]
             ))
 
-(def uri "datomic:free://localhost:4334/backend")
-
 (defn project-create
   [request]
-  (let [conn (d/connect uri)
+  (let [conn (:connection request)
         tx [
             [:db/add (d/tempid :db.part/user) :project/name "Bla"]
             ]

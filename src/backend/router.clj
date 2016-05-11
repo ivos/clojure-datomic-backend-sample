@@ -2,8 +2,9 @@
   (:require [compojure.core :refer :all]
             [compojure.route :as route]
             [ring.adapter.jetty :refer [run-jetty]]
-            [ring.middleware.params :refer :all]
-            [ring.middleware.keyword-params :refer :all]
+            [ring.middleware.json :refer [wrap-json-body wrap-json-response]]
+;            [ring.middleware.params :refer :all]
+;            [ring.middleware.keyword-params :refer :all]
             [datomic.api :as d]
             [backend.config :refer :all]
             [backend.project :refer :all]
@@ -23,9 +24,11 @@
 
 (def handler
   (-> route-handler
+    (wrap-json-body json-config)
+    (wrap-json-response)
+;    (wrap-keyword-params)
+;    (wrap-params)
     (wrap-connection)
-    (wrap-keyword-params)
-    (wrap-params)
     ))
 
 (defn start-router!

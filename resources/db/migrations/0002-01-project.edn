@@ -17,7 +17,7 @@
   :db/index true
   :db/id #db/id[:db.part/db] :db.install/_attribute :db.part/db}
  {:db/ident :project.visibility/public
-  :db/id #db/id[:backend]}
+  :db/id #db/id[:db.part/backend]}
  {:db/ident :project.visibility/private
-  :db/id #db/id[:backend]}
+  :db/id #db/id[:db.part/backend]}
  ]

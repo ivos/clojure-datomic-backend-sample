@@ -36,5 +36,7 @@
 (defn entity-create-tx
   [db-partition attributes data]
   (let [data-with-defaults (assoc data :entity/version 1)
-        add-txs (map (partial attribute-add-tx data-with-defaults) (conj attributes :entity/version))]
-    (filter identity add-txs)))
+        add-txs (map (partial attribute-add-tx data-with-defaults) (conj attributes :entity/version))
+        tx (filter identity add-txs)]
+    (log/trace "Create tx" tx)
+    tx))

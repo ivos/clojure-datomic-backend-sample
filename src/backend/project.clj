@@ -1,7 +1,9 @@
 (ns backend.project
   (:require [clojure.tools.logging :as log]
             [datomic.api :as d]
+            [ring.util.response :refer :all]
             [backend.entity :refer :all]
+            [backend.config :refer :all]
             ))
 
 (def ^:private db-partition :db.part/backend)
@@ -11,13 +13,13 @@
   [request]
   (let [conn (:connection request)
         tempid (d/tempid db-partition -1)
+        _ (log/info "Create project" (:body request))
         data (-> (:body request)
                (ns-keys attributes)
                (ns-value :project/visibility :project.visibility)
                (assoc :id tempid))
-        _ (log/info "Create project" data)
+        _ (log/debug "Creating" data)
         tx (entity-create-tx db-partition attributes data)
-        _ (log/trace "Tx" tx)
         tx-result @(d/transact conn tx)
         _ (log/trace "Tx result" tx-result)
         id (d/resolve-tempid (d/db conn) (:tempids tx-result) tempid)
@@ -27,6 +29,5 @@
                  (strip-value-ns :project/visibility)
                  strip-keys-ns)
         _ (log/info "Result" result)
-        ]
-    {:status 200
-     :body result}))
+        response (created (str (:deploy-url app-config) "projects/" id) result)]
+    response))

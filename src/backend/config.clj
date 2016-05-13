@@ -9,3 +9,4 @@
 (def db-config (parse-edn-resource "db-config.edn"))
 (def router-config (parse-edn-resource "router-config.edn"))
 (def json-config (parse-edn-resource "json-config.edn"))
+(def app-config (parse-edn-resource "app-config.edn"))

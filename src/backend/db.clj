@@ -27,11 +27,11 @@
 (defn migrate!
   [uri]
   (let [conn (d/connect uri)
-        names (list-resources "db/migrations/")
+        names (sort (list-resources "db/migrations/"))
         norms-map (apply merge (map wrapped-norm-content names))
+        _ (log/debug "Migrations loaded:" (keys norms-map))
         applied (c/ensure-conforms conn norms-map)
         ]
-    (log/debug "Migrations loaded:" (keys norms-map))
     (log/debug "Migrations applied:" (map :norm-name applied))
     ))
 

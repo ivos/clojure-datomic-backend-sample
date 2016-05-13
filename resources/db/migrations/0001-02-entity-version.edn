@@ -1,0 +1,7 @@
+[
+ {:db/ident :entity/version
+  :db/valueType :db.type/long
+  :db/cardinality :db.cardinality/one
+  :db/doc "Vesion of an entity. Manages optimistic locking."
+	:db/id #db/id[:db.part/db] :db.install/_attribute :db.part/db}
+ ]

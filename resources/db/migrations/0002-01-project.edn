@@ -1,0 +1,23 @@
+[
+ {:db/ident :project/name
+  :db/valueType :db.type/string
+  :db/cardinality :db.cardinality/one
+  :db/index true
+  :db/id #db/id[:db.part/db] :db.install/_attribute :db.part/db}
+
+ {:db/ident :project/code
+  :db/valueType :db.type/string
+  :db/cardinality :db.cardinality/one
+  :db/index true
+  :db/id #db/id[:db.part/db] :db.install/_attribute :db.part/db}
+
+ {:db/ident :project/visibility
+  :db/valueType :db.type/ref
+  :db/cardinality :db.cardinality/one
+  :db/index true
+  :db/id #db/id[:db.part/db] :db.install/_attribute :db.part/db}
+ {:db/ident :project.visibility/public
+  :db/id #db/id[:backend]}
+ {:db/ident :project.visibility/private
+  :db/id #db/id[:backend]}
+ ]

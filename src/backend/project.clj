@@ -22,12 +22,16 @@
         tx (entity-create-tx db-partition attributes data)
         tx-result @(d/transact conn tx)
         _ (log/trace "Tx result" tx-result)
-        id (d/resolve-tempid (d/db conn) (:tempids tx-result) tempid)
-        saved (merge {:db/id id} (d/touch (d/entity (d/db conn) id)))
+        db-after (:db-after tx-result)
+        id (d/resolve-tempid db-after (:tempids tx-result) tempid)
+        saved (merge {} (d/touch (d/entity db-after id)))
         _ (log/debug "Saved" saved)
         result (-> saved
+                 (dissoc :entity/version)
                  (strip-value-ns :project/visibility)
                  strip-keys-ns)
         _ (log/info "Result" result)
-        response (created (str (:deploy-url app-config) "projects/" id) result)]
+        response (-> (str (:deploy-url app-config) "projects/" id)
+                   (created result)
+                   (header "ETag" (:entity/version saved)))]
     response))

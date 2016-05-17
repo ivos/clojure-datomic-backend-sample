@@ -5,13 +5,13 @@
 
 (defn ns-value
   [data attribute ns]
-  (if-let [value (get data attribute)]
+  (when-let [value (get data attribute)]
     (let [namespaced (keyword (name ns) value)]
       (assoc data attribute namespaced))))
 
 (defn strip-value-ns
   [data attribute]
-  (if-let [value (get data attribute)]
+  (when-let [value (get data attribute)]
     (->> value
       name
       keyword

@@ -7,6 +7,7 @@
 ;            [ring.middleware.keyword-params :refer :all]
             [datomic.api :as d]
             [backend.config :refer :all]
+            [backend.validation :refer [wrap-validation]]
             [backend.project :refer :all]
             ))
 
@@ -15,8 +16,10 @@
   (POST "/projects" request (project-create request))
   (route/not-found "Page not found"))
 
-(defn wrap-connection [handler]
-  (fn [request]
+(defn wrap-connection
+  [handler]
+  (fn
+    [request]
     (let [uri (:uri db-config)
           conn (d/connect uri)
           request-wrapped (assoc request :connection conn)]
@@ -24,6 +27,7 @@
 
 (def handler
   (-> route-handler
+    (wrap-validation)
     (wrap-json-body json-config)
     (wrap-json-response)
 ;    (wrap-keyword-params)

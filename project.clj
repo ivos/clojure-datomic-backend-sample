@@ -15,6 +15,7 @@
                  [ch.qos.logback/logback-classic "1.1.7"]
                  ]
   :main ^:skip-aot backend.app
+  :aot [backend.validation]
   :target-path "target/%s"
   :profiles {:uberjar {:aot :all}}
   :plugins [[lein-ring "0.9.7"]]

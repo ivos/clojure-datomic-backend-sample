@@ -1,5 +1,6 @@
 (ns backend.router
-  (:require [compojure.core :refer :all]
+  (:require [clojure.tools.logging :as log]
+            [compojure.core :refer :all]
             [compojure.route :as route]
             [ring.adapter.jetty :refer [run-jetty]]
             [ring.middleware.json :refer [wrap-json-body wrap-json-response]]
@@ -25,14 +26,32 @@
           request-wrapped (assoc request :connection conn)]
       (handler request-wrapped))))
 
+(defn wrap-log
+  [handler]
+  (fn
+    [request]
+    (let [request-info
+          (clojure.string/join
+            " "
+            [(:protocol request)
+             (-> request :request-method name clojure.string/upper-case)
+             (:uri request)])]
+      (log/info ">>> Request"
+                request-info
+                (:body request))
+      (let [response (handler request)]
+        (log/info "<<< Response" request-info response)
+        response))))
+
 (def handler
   (-> route-handler
-    (wrap-validation)
+    wrap-validation
+    wrap-log
     (wrap-json-body json-config)
-    (wrap-json-response)
-;    (wrap-keyword-params)
-;    (wrap-params)
-    (wrap-connection)
+    wrap-json-response
+;    wrap-keyword-params
+;    wrap-params
+    wrap-connection
     ))
 
 (defn start-router!

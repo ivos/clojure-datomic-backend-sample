@@ -15,7 +15,6 @@
   [request]
   (let [conn (:connection request)
         tempid (d/tempid db-partition -1)
-        _ (log/info "Create project" (:body request))
         data (-> (:body request)
                (ns-keys attributes)
                (ns-value :project/visibility :project.visibility)
@@ -36,7 +35,6 @@
                  (dissoc :entity/version)
                  (strip-value-ns :project/visibility)
                  strip-keys-ns)
-        _ (log/info "Result" result)
         response (-> (str (:deploy-url app-config) "projects/" id)
                    (created result)
                    (header "ETag" (:entity/version saved)))]

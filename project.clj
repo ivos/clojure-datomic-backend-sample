@@ -19,5 +19,5 @@
   :target-path "target/%s"
   :profiles {:uberjar {:aot :all}}
   :plugins [[lein-ring "0.9.7"]]
-  :ring {:handler backend.router/handler}
+  :ring {:handler backend.app/repl-handler}
   )

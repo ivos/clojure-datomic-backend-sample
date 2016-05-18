@@ -5,9 +5,14 @@
             [backend.db :refer :all]
             [backend.router :refer :all]))
 
+(def ^:private config (read-config))
+
 (defn -main
   [& args]
-  (log/infof "Starting Backend, DB config %s, router config %s." db-config router-config)
-  (start-database! (:uri db-config))
-  (start-router! router-config)
-  )
+  (let [db-uri (get-in config [:db :uri])]
+    (log/info "Starting Backend, config:" config)
+    (start-database! db-uri)
+    (start-router! config)
+    ))
+
+(def repl-handler (handler config))

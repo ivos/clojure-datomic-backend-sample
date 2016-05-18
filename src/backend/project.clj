@@ -3,7 +3,6 @@
             [datomic.api :as d]
             [ring.util.response :refer :all]
             [bouncer.validators :as v]
-            [backend.config :refer :all]
             [backend.entity :refer :all]
             [backend.validation :refer [validate!]]
             ))
@@ -35,7 +34,7 @@
                  (dissoc :entity/version)
                  (strip-value-ns :project/visibility)
                  strip-keys-ns)
-        response (-> (str (:deploy-url app-config) "projects/" id)
+        response (-> (str (get-in request [:config :app :deploy-url]) "projects/" id)
                    (created result)
                    (header "ETag" (:entity/version saved)))]
     response))

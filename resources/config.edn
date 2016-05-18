@@ -1,0 +1,16 @@
+{
+ :app {
+       :deploy-url "http://localhost:3000/"
+       }
+ :db {
+      :uri "datomic:free://localhost:4334/backend"
+      ; :uri "datomic:mem://backend"
+      }
+ :jetty {
+         :port 3000
+         }
+ :json {
+        :keywords? true 
+        :bigdecimals? true
+        }
+ }

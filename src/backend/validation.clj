@@ -8,6 +8,7 @@
   [{:keys [path value metadata]}]
   (cond
     (= :bouncer.validators/required (:validator metadata)) "required"
+    (= :bouncer.validators/member (:validator metadata)) "invalid.enum.value"
     ))
 
 ; Create custom ValidationException to enable specific catch clause and wrap validation errors

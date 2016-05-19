@@ -9,6 +9,7 @@
 
 (def ^:private db-partition :db.part/backend)
 (def ^:private attributes [:project/name :project/code :project/visibility])
+(def ^:private visibilities #{:project.visibility/public :project.visibility/private})
 
 (defn project-create
   [request]
@@ -22,7 +23,7 @@
         _ (validate! data
                      :project/name v/required
                      :project/code v/required
-                     :project/visibility v/required)
+                     :project/visibility [[v/required] [v/member visibilities]])
         tx (entity-create-tx db-partition attributes data)
         tx-result @(d/transact conn tx)
         _ (log/trace "Tx result" tx-result)

@@ -13,6 +13,7 @@
                  [bouncer "1.0.0"]
                  [org.clojure/tools.logging "0.3.1"]
                  [ch.qos.logback/logback-classic "1.1.7"]
+                 [ring/ring-mock "0.3.0"]
                  ]
   :main ^:skip-aot backend.app
   :aot [backend.validation]

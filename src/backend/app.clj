@@ -5,7 +5,7 @@
             [backend.db :refer :all]
             [backend.router :refer :all]))
 
-(def ^:private config (read-config))
+(def config (read-config))
 
 (defn -main
   [& args]
@@ -15,4 +15,4 @@
     (start-router! config)
     ))
 
-(def repl-handler (handler config))
+(def repl-handler (create-handler config))

@@ -11,7 +11,7 @@
             [backend.project :refer :all]
             ))
 
-(defroutes route-handler
+(defroutes app-handler
   (GET "/" [] "<h1>Hello compojure</h1>")
   (POST "/projects" request (project-create request))
   (route/not-found "Page not found"))
@@ -48,9 +48,9 @@
         (log/info "<<< Response" request-info response)
         response))))
 
-(defn handler
+(defn create-handler
   [config]
-  (-> route-handler
+  (-> app-handler
     wrap-validation
     wrap-log
     (wrap-json-body (:json config))
@@ -64,4 +64,4 @@
 (defn start-router!
   "Start HTTP server."
   [config]
-  (run-jetty (handler config) (:jetty config)))
+  (run-jetty (create-handler config) (:jetty config)))

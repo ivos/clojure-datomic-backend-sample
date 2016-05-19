@@ -8,7 +8,7 @@ Sample of a REST backend on Datomic written in Clojure.
 
 1. Start Datomic transactor
 
-		$DATOMIC/bin/transactor $DATOMIC/config/samples/free-transactor-template.properties &
+		$DATOMIC/bin/transactor config/samples/free-transactor-template.properties &
 
 2. Optionally start Datomic console
 

@@ -1,0 +1,7 @@
+[
+ {:db/ident :entity/type
+  :db/valueType :db.type/ref
+  :db/cardinality :db.cardinality/one
+  :db/doc "Type of an entity. To identify indivudual types of entities."
+	:db/id #db/id[:db.part/db] :db.install/_attribute :db.part/db}
+ ]

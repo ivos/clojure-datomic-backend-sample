@@ -26,7 +26,9 @@
             location (get-in response [:headers "Location"])
             id (-> location (.split "/") last Long.)
             db (-> db-uri d/connect d/db)
-            created (d/pull db '[* {:project/visibility [:db/ident]}] id)
+            created (d/pull db '[* {:project/visibility [:db/ident]
+                                    :entity/type [:db/ident]}]
+                            id)
             ]
         ;(clojure.pprint/pprint response)
         (is-response-created response request-body config)

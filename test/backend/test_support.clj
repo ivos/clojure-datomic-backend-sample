@@ -19,7 +19,8 @@
 
 (defn read-edn
   [path]
-  (-> (str "test/" path ".edn") slurp edn/read-string))
+  (edn/read-string {:readers *data-readers*}
+                   (-> (str "test/" path ".edn") slurp)))
 
 (defn is-response-json
   [response]
@@ -33,4 +34,22 @@
     (is (= (get-in response [:headers "ETag"]) "1"))
     (is (= (:body response) expected-body))
     (is (.startsWith location (get-in config [:app :deploy-url])))
+    ))
+
+(defn is-response-ok
+  [response expected-body version]
+  (is (= (:status response) 200))
+  (is-response-json response)
+  (is (= (get-in response [:headers "ETag"]) (str version)))
+  (is (= (:body response) expected-body))
+  )
+
+(defn not-found-test
+  [handler request]
+  (let [response (handler request)
+        response-body (read-json "backend/not-found-response")
+        ]
+    (is (= (:status response) 404))
+    (is-response-json response)
+    (is (= (:body response) response-body))
     ))

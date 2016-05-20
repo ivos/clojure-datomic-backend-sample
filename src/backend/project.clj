@@ -24,7 +24,7 @@
                      :project/name v/required
                      :project/code v/required
                      :project/visibility [[v/required] [v/member visibilities]])
-        tx (entity-create-tx db-partition attributes data)
+        tx (entity-create-tx db-partition :entity.type/project attributes data)
         tx-result @(d/transact conn tx)
         _ (log/trace "Tx result" tx-result)
         db-after (:db-after tx-result)
@@ -32,10 +32,34 @@
         saved (merge {} (d/touch (d/entity db-after id)))
         _ (log/debug "Saved" saved)
         result (-> saved
-                 (dissoc :entity/version)
+                 (dissoc :entity/version :entity/type)
                  (strip-value-ns :project/visibility)
                  strip-keys-ns)
         response (-> (str (get-in request [:config :app :deploy-url]) "projects/" id)
                    (created result)
                    (header "ETag" (:entity/version saved)))]
     response))
+
+(defn project-read
+  [request]
+  (let [conn (:connection request)
+        db (d/db conn)
+        params (:params request)
+        id (-> params :id Long.)
+        eid (-> (d/q '[:find ?e
+                       :in $ ?e ?type
+                       :where [?e :entity/type ?type]]
+                     db id :entity.type/project)
+              ffirst)]
+    (if eid
+      (let [data (merge {} (d/touch (d/entity db eid)))
+            _ (log/debug "Read" data)
+            result (-> data
+                     (dissoc :entity/version :entity/type)
+                     (strip-value-ns :project/visibility)
+                     strip-keys-ns)
+            response (-> (response result)
+                       (header "ETag" (:entity/version data)))]
+        response)
+      (not-found {:code :entity.not.found}))
+    ))

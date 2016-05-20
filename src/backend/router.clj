@@ -3,6 +3,7 @@
             [compojure.core :refer :all]
             [compojure.route :as route]
             [ring.adapter.jetty :refer [run-jetty]]
+            [ring.util.response :refer [not-found]]
             [ring.middleware.json :refer [wrap-json-body wrap-json-response]]
 ;            [ring.middleware.params :refer :all]
 ;            [ring.middleware.keyword-params :refer :all]
@@ -14,7 +15,8 @@
 (defroutes app-handler
   (GET "/" [] "<h1>Hello compojure</h1>")
   (POST "/projects" request (project-create request))
-  (route/not-found "Page not found"))
+  (GET "/projects/:id{[0-9]+}" request (project-read request))
+  (route/not-found (fn [_] (not-found {:code :entity.not.found}))))
 
 (defn- wrap-config
   [handler config]
@@ -40,10 +42,13 @@
             " "
             [(:protocol request)
              (-> request :request-method name clojure.string/upper-case)
-             (:uri request)])]
+             (:uri request)])
+          body (if (#{:get :head :delete} (:request-method request))
+                 ""
+                 (:body request))]
       (log/info ">>> Request"
                 request-info
-                (:body request))
+                body)
       (let [response (handler request)]
         (log/info "<<< Response" request-info response)
         response))))

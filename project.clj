@@ -11,12 +11,12 @@
                  [ring/ring-json "0.4.0"]
                  [compojure "1.5.0"]
                  [bouncer "1.0.0"]
+                 [slingshot "0.12.2"]
                  [org.clojure/tools.logging "0.3.1"]
                  [ch.qos.logback/logback-classic "1.1.7"]
                  [ring/ring-mock "0.3.0"]
                  ]
   :main ^:skip-aot backend.app
-  :aot [backend.validation]
   :target-path "target/%s"
   :profiles {:uberjar {:aot :all}}
   :plugins [[lein-ring "0.9.7"]]

@@ -3,11 +3,12 @@
             [compojure.core :refer :all]
             [compojure.route :as route]
             [ring.adapter.jetty :refer [run-jetty]]
-            [ring.util.response :refer [not-found]]
+            [ring.util.response :refer [not-found header]]
             [ring.middleware.json :refer [wrap-json-body wrap-json-response]]
 ;            [ring.middleware.params :refer :all]
 ;            [ring.middleware.keyword-params :refer :all]
             [datomic.api :as d]
+            [slingshot.slingshot :refer [try+]]
             [backend.validation :refer [wrap-validation]]
             [backend.project :refer :all]
             ))
@@ -34,6 +35,14 @@
           request-wrapped (assoc request :connection conn)]
       (handler request-wrapped))))
 
+(defn- wrap-conflict
+  [handler]
+  (fn
+    [request]
+    (try+ (handler request)
+          (catch [:db/error :db.error/cas-failed] {:keys [:v]}
+            (header {:status 409} "ETag" v)))))
+
 (defn- wrap-log
   [handler]
   (fn
@@ -49,7 +58,8 @@
                  (:body request))]
       (log/info ">>> Request"
                 request-info
-                body)
+                body
+                (-> request :headers (dissoc "host" "content-length")))
       (let [response (handler request)]
         (log/info "<<< Response" request-info response)
         response))))
@@ -58,6 +68,7 @@
   [config]
   (-> app-handler
     wrap-validation
+    wrap-conflict
     wrap-log
     (wrap-json-body (:json config))
     wrap-json-response

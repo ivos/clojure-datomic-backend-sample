@@ -48,6 +48,10 @@
 (defn entity-update-tx
   [db-partition type attributes db-data data version]
   (let [update-txs (map (partial attribute-tx db-data data) attributes)
-        tx (filter identity update-txs)]
-    (log/debug "Update tx" tx)
+        filtered (filter identity update-txs)
+        version-number (Long. version)
+        tx (conj
+             filtered
+             [:db.fn/cas (:id data) :entity/version version-number (inc version-number)])]
+    (log/trace "Update tx" tx)
     tx))

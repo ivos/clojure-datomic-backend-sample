@@ -56,10 +56,11 @@
                 :keep-same5 :v-keep-same5
                 :keep-nil6 nil
                 :other :v-other}
-          tx (entity-update-tx :db-part1 :type1 attributes db-data data :version1)
+          tx (entity-update-tx :db-part1 :type1 attributes db-data data 123)
           ]
       (is (=
-            '([:db/add :v-id :modify1 :v-modify1]
+            '([:db.fn/cas :v-id :entity/version 123 124]
+               [:db/add :v-id :modify1 :v-modify1]
                [:db/add :v-id :modify2 :v-modify2]
                [:db/retract :v-id :retract3 :db-retract3]
                [:db/add :v-id :add4 :v-add4]

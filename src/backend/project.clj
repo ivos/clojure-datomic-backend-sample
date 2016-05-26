@@ -44,8 +44,7 @@
   [request]
   (let [conn (:connection request)
         db (d/db conn)
-        params (:params request)
-        id (-> params :id Long.)
+        id (-> request :params :id Long.)
         eid (-> (d/q '[:find ?e
                        :in $ ?e ?type
                        :where [?e :entity/type ?type]]
@@ -68,13 +67,12 @@
   [request]
   (let [conn (:connection request)
         db (d/db conn)
-        params (:params request)
-        id (-> params :id Long.)
+        id (-> request :params :id Long.)
         data (-> (:body request)
                (ns-keys attributes)
                (ns-value :project/visibility :project.visibility)
                (assoc :id id))
-        version 1
+        version (get-in request [:headers "if-match"])
         _ (log/debug "Updating" data)
         _ (validate! data
                      :project/name v/required
@@ -85,10 +83,9 @@
                        :where [?e :entity/type ?type]]
                      db id :entity.type/project)
               ffirst)]
-    (log/debug "Request" request)
     (if eid
       (let [db-data (merge {} (d/touch (d/entity db eid)))
-            _ (log/debug "Read" data)
+            _ (log/debug "Read" db-data)
             tx (entity-update-tx db-partition :entity.type/project attributes db-data data version)
             tx-result @(d/transact conn tx)
             _ (log/trace "Tx result" tx-result)

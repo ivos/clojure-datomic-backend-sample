@@ -44,6 +44,12 @@
   (is (= (:body response) expected-body))
   )
 
+(defn is-response-conflict
+  [response version]
+  (is (= (:status response) 409))
+  (is (= (get-in response [:headers "ETag"]) (str version)))
+  )
+
 (defn not-found-test
   [handler request]
   (let [response (handler request)

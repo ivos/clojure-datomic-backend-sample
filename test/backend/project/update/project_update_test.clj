@@ -10,7 +10,8 @@
 (defn- create-request
   [id body]
   (-> (mock/request :put (str "/projects/" id) body)
-    (mock/content-type "application/json")))
+    (mock/content-type "application/json")
+    (mock/header "If-Match" 123)))
 
 (deftest project-update-test
   (let [db-uri (test-db-uri)
@@ -23,17 +24,11 @@
                           :in $ ?code
                           :where [?e :project/code ?code]]
                         db
-                        "code-1")
+                        "code-full")
                  ffirst)]
     (testing
       "Full"
-      (let [id (-> (d/q '[:find ?e
-                          :in $ ?code
-                          :where [?e :project/code ?code]]
-                        db
-                        "code-1")
-                 ffirst)
-            request-body (read-json "backend/project/update/full-request")
+      (let [request-body (read-json "backend/project/update/full-request")
             verify (read-edn "backend/project/update/full-verify")
             request (create-request id request-body)
             response (handler request)
@@ -43,7 +38,7 @@
                             id)
             ]
         ;(clojure.pprint/pprint response)
-        (is-response-ok response request-body 123)
+        (is-response-ok response request-body 124)
         ;(clojure.pprint/pprint updated)
         (is (= (assoc verify :db/id id) updated))
         ))
@@ -62,4 +57,45 @@
         (is-response-json response)
         (is (= (:body response) response-body))
         ))
+    (testing
+      "Optimistic lock failure"
+      (let [id (-> (d/q '[:find ?e
+                          :in $ ?code
+                          :where [?e :project/code ?code]]
+                        db
+                        "code-optimistic")
+                 ffirst)
+            request-body (read-json "backend/project/update/full-request")
+            verify (read-edn "backend/project/update/optimistic-verify")
+            request (mock/header (create-request id request-body) "If-Match" 122)
+            response (handler request)
+            db-after (-> db-uri d/connect d/db)
+            updated (d/pull db-after '[* {:project/visibility [:db/ident]
+                                          :entity/type [:db/ident]}]
+                            id)
+            ]
+        (is-response-conflict response 123) ; TODO switch to precondition-failed
+        (is (= (assoc verify :db/id id) updated))
+        ))
+    '(testing ; TODO activate
+       "Version missing"
+       (let [id (-> (d/q '[:find ?e
+                           :in $ ?code
+                           :where [?e :project/code ?code]]
+                         db
+                         "code-optimistic")
+                  ffirst)
+             request-body (read-json "backend/project/update/full-request")
+             verify (read-edn "backend/project/update/optimistic-verify")
+             request (update-in (create-request id request-body) [:headers] dissoc "if-match")
+             _ (clojure.pprint/pprint request)
+             response (handler request)
+             db-after (-> db-uri d/connect d/db)
+             updated (d/pull db-after '[* {:project/visibility [:db/ident]
+                                           :entity/type [:db/ident]}]
+                             id)
+             ]
+         (is-response-conflict response 123) ; TODO switch to precondition-failed
+         (is (= (assoc verify :db/id id) updated))
+         ))
     ))

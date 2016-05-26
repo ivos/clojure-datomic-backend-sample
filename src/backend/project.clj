@@ -63,3 +63,44 @@
         response)
       (not-found {:code :entity.not.found}))
     ))
+
+(defn project-update
+  [request]
+  (let [conn (:connection request)
+        db (d/db conn)
+        params (:params request)
+        id (-> params :id Long.)
+        data (-> (:body request)
+               (ns-keys attributes)
+               (ns-value :project/visibility :project.visibility)
+               (assoc :id id))
+        version 1
+        _ (log/debug "Updating" data)
+        _ (validate! data
+                     :project/name v/required
+                     :project/code v/required
+                     :project/visibility [[v/required] [v/member visibilities]])
+        eid (-> (d/q '[:find ?e
+                       :in $ ?e ?type
+                       :where [?e :entity/type ?type]]
+                     db id :entity.type/project)
+              ffirst)]
+    (log/debug "Request" request)
+    (if eid
+      (let [db-data (merge {} (d/touch (d/entity db eid)))
+            _ (log/debug "Read" data)
+            tx (entity-update-tx db-partition :entity.type/project attributes db-data data version)
+            tx-result @(d/transact conn tx)
+            _ (log/trace "Tx result" tx-result)
+            db-after (:db-after tx-result)
+            saved (merge {} (d/touch (d/entity db-after id)))
+            _ (log/debug "Saved" saved)
+            result (-> saved
+                     (dissoc :entity/version :entity/type)
+                     (strip-value-ns :project/visibility)
+                     strip-keys-ns)
+            response (-> (response result)
+                       (header "ETag" (:entity/version saved)))]
+        response)
+      (not-found {:code :entity.not.found}))
+    ))

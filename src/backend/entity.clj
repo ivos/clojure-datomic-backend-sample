@@ -27,16 +27,27 @@
   [data]
   (zipmap (map name (keys data)) (vals data)))
 
-(defn- attribute-add-tx
-  [data attribute]
-  (when-some [value (get data attribute)]
-             [:db/add (:id data) attribute value]))
+(defn- attribute-tx
+  [db-data data attribute]
+  (let [db-value (get db-data attribute)
+        value (get data attribute)]
+    (cond
+      (= db-value value) nil
+      (nil? value) [:db/retract (:id data) attribute db-value]
+      :otherwise [:db/add (:id data) attribute value])))
 
 (defn entity-create-tx
   [db-partition type attributes data]
-  (let [data-with-defaults (assoc data :entity/type type :entity/version 1)
+  (let [data-preset (assoc data :entity/type type :entity/version 1)
         extended-attrs (conj attributes :entity/version :entity/type)
-        add-txs (map (partial attribute-add-tx data-with-defaults) extended-attrs)
+        add-txs (map (partial attribute-tx nil data-preset) extended-attrs)
         tx (filter identity add-txs)]
     (log/trace "Create tx" tx)
+    tx))
+
+(defn entity-update-tx
+  [db-partition type attributes db-data data version]
+  (let [update-txs (map (partial attribute-tx db-data data) attributes)
+        tx (filter identity update-txs)]
+    (log/debug "Update tx" tx)
     tx))

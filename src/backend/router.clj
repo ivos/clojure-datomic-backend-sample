@@ -16,6 +16,7 @@
   (GET "/" [] "<h1>Hello compojure</h1>")
   (POST "/projects" request (project-create request))
   (GET "/projects/:id{[0-9]+}" request (project-read request))
+  (PUT "/projects/:id{[0-9]+}" request (project-update request))
   (route/not-found (fn [_] (not-found {:code :entity.not.found}))))
 
 (defn- wrap-config

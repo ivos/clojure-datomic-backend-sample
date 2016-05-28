@@ -103,3 +103,31 @@
         response)
       (not-found {:code :entity.not.found}))
     ))
+
+(defn project-delete
+  [request]
+  (let [conn (:connection request)
+        db (d/db conn)
+        id (-> request :params :id Long.)
+        version (get-in request [:headers "if-match"])
+        eid (-> (d/q '[:find ?e
+                       :in $ ?e ?type
+                       :where [?e :entity/type ?type]]
+                     db id :entity.type/project)
+              ffirst)]
+    (when (nil? version) (throw+ {:type :custom-response :response {:status 428}}))
+    (if eid
+      (let [tx (entity-delete-tx id version)
+            tx-result @(d/transact conn tx)
+            _ (log/debug "Tx result" tx-result)
+            db-after (:db-after tx-result)
+            saved (merge {} (d/touch (d/entity db-after id)))
+            _ (log/debug "Saved" saved)
+            result (-> saved
+                     (dissoc :entity/version :entity/type)
+                     (strip-value-ns :project/visibility)
+                     strip-keys-ns)
+            response {:status 204}]
+        response)
+      (not-found {:code :entity.not.found}))
+    ))

@@ -18,6 +18,7 @@
   (POST "/projects" request (project-create request))
   (GET "/projects/:id{[0-9]+}" request (project-read request))
   (PUT "/projects/:id{[0-9]+}" request (project-update request))
+  (DELETE "/projects/:id{[0-9]+}" request (project-delete request))
   (route/not-found (fn [_] (not-found {:code :entity.not.found}))))
 
 (defn- wrap-config
@@ -40,7 +41,7 @@
   (fn
     [request]
     (try+ (handler request)
-          (catch [:db/error :db.error/cas-failed] {:keys [:v]}
+          (catch [:type :db-ensure-failure] {:keys [:v]}
             (header {:status 409} "ETag" v)))))
 
 (defn- wrap-custom-response

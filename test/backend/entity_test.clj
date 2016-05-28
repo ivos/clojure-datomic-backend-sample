@@ -59,11 +59,24 @@
           tx (entity-update-tx :db-part1 :type1 attributes db-data data 123)
           ]
       (is (=
-            '([:db.fn/cas :v-id :entity/version 123 124]
+            '([:ensure :v-id :entity/version 123]
+               [:db/add :v-id :entity/version 124]
                [:db/add :v-id :modify1 :v-modify1]
                [:db/add :v-id :modify2 :v-modify2]
                [:db/retract :v-id :retract3 :db-retract3]
                [:db/add :v-id :add4 :v-add4]
+               )
+            tx))
+      ))
+  )
+
+(deftest entity-delete-tx-test
+  (testing
+    (let [tx (entity-delete-tx 678 123)
+          ]
+      (is (=
+            '([:ensure 678 :entity/version 123]
+               [:db.fn/retractEntity 678]
                )
             tx))
       ))

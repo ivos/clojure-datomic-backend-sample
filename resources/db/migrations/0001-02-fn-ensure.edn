@@ -1,0 +1,15 @@
+[
+ {:db/ident :ensure
+  :db/doc "Ensure value of an attribute."
+  :db/fn #db/fn
+{:lang "clojure"
+ :params [db e a v]
+ :code (let [actual (a (d/entity db e))]
+         (when-not (= v actual)
+           (slingshot.slingshot/throw+
+             {:type :db-ensure-failure
+              :v actual
+              :message (str "On entity " e " attribute " a " expected value " v ", but was " actual ".")})))
+ }
+  :db/id #db/id[:db.part/backend]}
+ ]

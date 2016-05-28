@@ -53,8 +53,20 @@
   (let [update-txs (map (partial attribute-tx db-data data) attributes)
         filtered (filter identity update-txs)
         version-number (Long. version)
+        id (:id data)
         tx (conj
              filtered
-             [:db.fn/cas (:id data) :entity/version version-number (inc version-number)])]
+             [:db/add id :entity/version (inc version-number)]
+             [:ensure id :entity/version version-number])]
     (log/trace "Update tx" tx)
+    tx))
+
+(defn entity-delete-tx
+  [id version]
+  {:pre [(integer? id) (or (string? version) (integer? version))]}
+  (let [version-number (Long. version)
+        tx [[:ensure id :entity/version version-number]
+            [:db.fn/retractEntity id]]
+        ]
+    (log/debug "Delete tx" tx)
     tx))

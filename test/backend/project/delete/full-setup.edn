@@ -1,0 +1,16 @@
+[
+ {:db/id #db/id[:db.part/backend -1]
+  :entity/type :entity.type/project
+  :entity/version 123
+  :project/name "Name full"
+  :project/code "code-full"
+  :project/visibility :project.visibility/private
+  }
+ {:db/id #db/id[:db.part/backend -2]
+  :entity/type :entity.type/project
+  :entity/version 123
+  :project/name "Name optimistic"
+  :project/code "code-optimistic"
+  :project/visibility :project.visibility/private
+  }
+ ]

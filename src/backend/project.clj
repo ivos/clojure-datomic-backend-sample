@@ -3,6 +3,7 @@
             [datomic.api :as d]
             [ring.util.response :refer :all]
             [bouncer.validators :as v]
+            [slingshot.slingshot :refer [throw+]]
             [backend.entity :refer :all]
             [backend.validation :refer [validate!]]
             ))
@@ -83,6 +84,7 @@
                        :where [?e :entity/type ?type]]
                      db id :entity.type/project)
               ffirst)]
+    (when (nil? version) (throw+ {:type :custom-response :response {:status 428}}))
     (if eid
       (let [db-data (merge {} (d/touch (d/entity db eid)))
             _ (log/debug "Read" db-data)

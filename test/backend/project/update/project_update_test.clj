@@ -74,28 +74,27 @@
                                           :entity/type [:db/ident]}]
                             id)
             ]
-        (is-response-conflict response 123) ; TODO switch to precondition-failed
+        (is-response-conflict response 123) ; TODO switch to precondition-failed?
         (is (= (assoc verify :db/id id) updated))
         ))
-    '(testing ; TODO activate
-       "Version missing"
-       (let [id (-> (d/q '[:find ?e
-                           :in $ ?code
-                           :where [?e :project/code ?code]]
-                         db
-                         "code-optimistic")
-                  ffirst)
-             request-body (read-json "backend/project/update/full-request")
-             verify (read-edn "backend/project/update/optimistic-verify")
-             request (update-in (create-request id request-body) [:headers] dissoc "if-match")
-             _ (clojure.pprint/pprint request)
-             response (handler request)
-             db-after (-> db-uri d/connect d/db)
-             updated (d/pull db-after '[* {:project/visibility [:db/ident]
-                                           :entity/type [:db/ident]}]
-                             id)
-             ]
-         (is-response-conflict response 123) ; TODO switch to precondition-failed
-         (is (= (assoc verify :db/id id) updated))
-         ))
+    (testing
+      "Version missing"
+      (let [id (-> (d/q '[:find ?e
+                          :in $ ?code
+                          :where [?e :project/code ?code]]
+                        db
+                        "code-optimistic")
+                 ffirst)
+            request-body (read-json "backend/project/update/full-request")
+            verify (read-edn "backend/project/update/optimistic-verify")
+            request (update-in (create-request id request-body) [:headers] dissoc "if-match")
+            response (handler request)
+            db-after (-> db-uri d/connect d/db)
+            updated (d/pull db-after '[* {:project/visibility [:db/ident]
+                                          :entity/type [:db/ident]}]
+                            id)
+            ]
+        (is-response-precondition-required response)
+        (is (= (assoc verify :db/id id) updated))
+        ))
     ))

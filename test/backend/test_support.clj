@@ -50,6 +50,11 @@
   (is (= (get-in response [:headers "ETag"]) (str version)))
   )
 
+(defn is-response-precondition-required
+  [response]
+  (is (= (:status response) 428))
+  )
+
 (defn not-found-test
   [handler request]
   (let [response (handler request)

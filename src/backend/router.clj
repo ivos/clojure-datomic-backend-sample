@@ -43,6 +43,14 @@
           (catch [:db/error :db.error/cas-failed] {:keys [:v]}
             (header {:status 409} "ETag" v)))))
 
+(defn- wrap-custom-response
+  [handler]
+  (fn
+    [request]
+    (try+ (handler request)
+          (catch [:type :custom-response] {:keys [:response]}
+            response))))
+
 (defn- wrap-log
   [handler]
   (fn
@@ -69,6 +77,7 @@
   (-> app-handler
     wrap-validation
     wrap-conflict
+    wrap-custom-response
     wrap-log
     (wrap-json-body (:json config))
     wrap-json-response

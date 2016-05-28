@@ -38,6 +38,7 @@
 
 (defn entity-create-tx
   [db-partition type attributes data]
+  {:pre [(vector? attributes) (map? data)]}
   (let [data-preset (assoc data :entity/type type :entity/version 1)
         extended-attrs (conj attributes :entity/version :entity/type)
         add-txs (map (partial attribute-tx nil data-preset) extended-attrs)
@@ -47,6 +48,8 @@
 
 (defn entity-update-tx
   [db-partition type attributes db-data data version]
+  {:pre [(vector? attributes) (map? db-data) (map? data)
+         (or (string? version) (integer? version))]}
   (let [update-txs (map (partial attribute-tx db-data data) attributes)
         filtered (filter identity update-txs)
         version-number (Long. version)

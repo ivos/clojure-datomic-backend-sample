@@ -8,10 +8,13 @@
             ))
 
 (defn- create-request
-  [id body]
-  (-> (mock/request :put (str "/projects/" id) body)
-    (mock/content-type "application/json")
-    (mock/header "If-Match" 123)))
+  [id version body]
+  (let [request 
+        (-> (mock/request :put (str "/projects/" id) body)
+          (mock/content-type "application/json"))]
+    (if (nil? version)
+      request
+      (mock/header request "If-Match" version))))
 
 (deftest project-update-test
   (let [db-uri (test-db-uri)
@@ -30,7 +33,7 @@
       "Full"
       (let [request-body (read-json "backend/project/update/full-request")
             verify (read-edn "backend/project/update/full-verify")
-            request (create-request id request-body)
+            request (create-request id 123 request-body)
             response (handler request)
             db-after (-> db-uri d/connect d/db)
             updated (d/pull db-after '[* {:project/visibility [:db/ident]
@@ -45,12 +48,12 @@
     (testing
       "Not found"
       (let [request-body (read-json "backend/project/update/full-request")]
-        (not-found-test handler (create-request 10 request-body))))
+        (not-found-test handler (create-request 10 123 request-body))))
     (testing
       "Empty"
       (let [request-body "{}"
             response-body (read-json "backend/project/update/empty-response")
-            request (create-request id request-body)
+            request (create-request id 123 request-body)
             response (handler request)
             ]
         (is (= (:status response) 422))
@@ -67,7 +70,7 @@
                  ffirst)
             request-body (read-json "backend/project/update/full-request")
             verify (read-edn "backend/project/update/optimistic-verify")
-            request (mock/header (create-request id request-body) "If-Match" 122)
+            request (create-request id 122 request-body)
             response (handler request)
             db-after (-> db-uri d/connect d/db)
             updated (d/pull db-after '[* {:project/visibility [:db/ident]
@@ -87,7 +90,7 @@
                  ffirst)
             request-body (read-json "backend/project/update/full-request")
             verify (read-edn "backend/project/update/optimistic-verify")
-            request (update-in (create-request id request-body) [:headers] dissoc "if-match")
+            request (create-request id nil request-body)
             response (handler request)
             db-after (-> db-uri d/connect d/db)
             updated (d/pull db-after '[* {:project/visibility [:db/ident]

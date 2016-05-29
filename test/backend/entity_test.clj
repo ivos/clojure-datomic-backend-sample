@@ -1,5 +1,6 @@
 (ns backend.entity-test
   (:require [clojure.test :refer :all]
+            [slingshot.slingshot :refer [try+]]
             [backend.entity :refer :all]))
 
 (deftest ns-keys-test
@@ -59,7 +60,7 @@
           tx (entity-update-tx :db-part1 :type1 attributes db-data data 123)
           ]
       (is (=
-            '([:ensure :v-id :entity/version 123]
+            '([:optimistic-lock :v-id 123]
                [:db/add :v-id :entity/version 124]
                [:db/add :v-id :modify1 :v-modify1]
                [:db/add :v-id :modify2 :v-modify2]
@@ -68,16 +69,40 @@
                )
             tx))
       ))
+  (testing
+    "Invalid version"
+    (let [attributes [:a]
+          db-data {:a :db-a
+                   :entity/version :db-version}
+          data {:id :v-id
+                :a :v-a}
+          ]
+      (try+ (do
+              (entity-update-tx :db-part1 :type1 attributes db-data data "invalid")
+              (is false "Should throw"))
+            (catch [:type :optimistic-locking-failure] {:keys [:v]}
+              (is (= :db-version v))))
+      ))
   )
 
 (deftest entity-delete-tx-test
   (testing
-    (let [tx (entity-delete-tx 678 123)
+    (let [db-data {:entity/version :db-version}
+          tx (entity-delete-tx db-data 678 123)
           ]
       (is (=
-            '([:ensure 678 :entity/version 123]
+            '([:optimistic-lock 678 123]
                [:db.fn/retractEntity 678]
                )
             tx))
       ))
+  (testing
+    "Invalid version"
+    (let [db-data {:entity/version :db-version}]
+      (try+ (do
+              (entity-delete-tx db-data 678 "invalid")
+              (is false "Should throw"))
+            (catch [:type :optimistic-locking-failure] {:keys [:v]}
+              (is (= :db-version v)))))
+    )
   )

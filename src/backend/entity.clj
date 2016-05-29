@@ -1,6 +1,7 @@
 (ns backend.entity
   (:require [clojure.tools.logging :as log]
             [datomic.api :as d]
+            [slingshot.slingshot :refer [throw+]]
             ))
 
 (defn ns-value
@@ -36,6 +37,13 @@
       (nil? value) [:db/retract (:id data) attribute db-value]
       :otherwise [:db/add (:id data) attribute value])))
 
+(defn- get-version-number
+  [db-data version]
+  (try (Long. version)
+    (catch NumberFormatException _
+      (throw+ {:type :optimistic-locking-failure
+               :v (:entity/version db-data)}))))
+
 (defn entity-create-tx
   [db-partition type attributes data]
   {:pre [(vector? attributes) (map? data)]}
@@ -52,21 +60,21 @@
          (or (string? version) (integer? version))]}
   (let [update-txs (map (partial attribute-tx db-data data) attributes)
         filtered (filter identity update-txs)
-        version-number (Long. version)
+        version-number (get-version-number db-data version)
         id (:id data)
         tx (conj
              filtered
              [:db/add id :entity/version (inc version-number)]
-             [:ensure id :entity/version version-number])]
+             [:optimistic-lock id version-number])]
     (log/trace "Update tx" tx)
     tx))
 
 (defn entity-delete-tx
-  [id version]
+  [db-data id version]
   {:pre [(integer? id) (or (string? version) (integer? version))]}
-  (let [version-number (Long. version)
-        tx [[:ensure id :entity/version version-number]
+  (let [version-number (get-version-number db-data version)
+        tx [[:optimistic-lock id version-number]
             [:db.fn/retractEntity id]]
         ]
-    (log/debug "Delete tx" tx)
+    (log/trace "Delete tx" tx)
     tx))

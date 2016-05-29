@@ -1,0 +1,14 @@
+[
+ {:db/ident :optimistic-lock
+  :db/doc "Verify entity version for optimistic locking."
+  :db/fn #db/fn
+{:lang "clojure"
+ :params [db e v]
+ :code (let [actual (:entity/version (d/entity db e))]
+         (when-not (= v actual)
+           (throw (ex-info (str "On entity " e " expected version " v ", but was " actual ".")
+             {:type :optimistic-locking-failure
+              :v actual}))))
+ }
+  :db/id #db/id[:db.part/backend]}
+ ]

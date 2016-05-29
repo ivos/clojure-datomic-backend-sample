@@ -117,12 +117,13 @@
               ffirst)]
     (when (nil? version) (throw+ {:type :custom-response :response {:status 428}}))
     (if eid
-      (let [tx (entity-delete-tx id version)
+      (let [db-data (merge {} (d/touch (d/entity db eid)))
+            _ (log/debug "Read" db-data)
+            tx (entity-delete-tx db-data id version)
             tx-result @(d/transact conn tx)
-            _ (log/debug "Tx result" tx-result)
+            _ (log/trace "Tx result" tx-result)
             db-after (:db-after tx-result)
             saved (merge {} (d/touch (d/entity db-after id)))
-            _ (log/debug "Saved" saved)
             result (-> saved
                      (dissoc :entity/version :entity/type)
                      (strip-value-ns :project/visibility)

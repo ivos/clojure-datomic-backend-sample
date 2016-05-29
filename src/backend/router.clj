@@ -41,7 +41,7 @@
   (fn
     [request]
     (try+ (handler request)
-          (catch [:type :db-ensure-failure] {:keys [:v]}
+          (catch [:type :optimistic-locking-failure] {:keys [:v]}
             (header {:status 409} "ETag" v)))))
 
 (defn- wrap-custom-response

@@ -1,5 +1,6 @@
 (ns backend.validation
-  (:require [clojure.tools.logging :as log]
+  (:require [clojure.set :as set]
+            [clojure.tools.logging :as log]
             [bouncer.core :as b]
             [slingshot.slingshot :refer [throw+ try+]]
             ))
@@ -11,6 +12,16 @@
     (= :bouncer.validators/required (:validator metadata)) "required"
     (= :bouncer.validators/member (:validator metadata)) "invalid.enum.value"
     ))
+
+(defn verify-keys!
+  "Throw ValidationException on unknown data key."
+  [attributes data]
+  (let [keys (set/difference (set (keys data)) (set attributes))
+        errors (zipmap keys (repeat ["invalid.attribute"]))]
+    (when (not (empty? keys))
+               (log/debug "Validation failure, unknown keys" keys)
+               (throw+ {:type ::validation-failure :errors errors})
+               )))
 
 (defn validate!
   "Throw ValidationException on validation failure."

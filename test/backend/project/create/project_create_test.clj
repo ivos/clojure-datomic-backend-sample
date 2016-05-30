@@ -47,9 +47,20 @@
         (is (= (:body response) response-body))
         ))
     (testing
-      "Invalid"
-      (let [request-body (read-json "backend/project/create/invalid-request")
-            response-body (read-json "backend/project/create/invalid-response")
+      "Invalid enum value"
+      (let [request-body (read-json "backend/project/create/invalid-enum-request")
+            response-body (read-json "backend/project/create/invalid-enum-response")
+            request (create-request request-body)
+            response (handler request)
+            ]
+        (is (= (:status response) 422))
+        (is-response-json response)
+        (is (= (:body response) response-body))
+        ))
+    (testing
+      "Invalid attribute"
+      (let [request-body (read-json "backend/project/create/invalid-attribute-request")
+            response-body (read-json "backend/project/create/invalid-attribute-response")
             request (create-request request-body)
             response (handler request)
             ]

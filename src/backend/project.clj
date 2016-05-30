@@ -5,7 +5,7 @@
             [bouncer.validators :as v]
             [slingshot.slingshot :refer [throw+]]
             [backend.entity :refer :all]
-            [backend.validation :refer [validate!]]
+            [backend.validation :refer [verify-keys! validate!]]
             ))
 
 (def ^:private db-partition :db.part/backend)
@@ -21,6 +21,7 @@
                (ns-value :project/visibility :project.visibility)
                (assoc :id tempid))
         _ (log/debug "Creating" data)
+        _ (verify-keys! (conj attributes :id) data)
         _ (validate! data
                      :project/name v/required
                      :project/code v/required
@@ -75,6 +76,7 @@
                (assoc :id id))
         version (get-in request [:headers "if-match"])
         _ (log/debug "Updating" data)
+        _ (verify-keys! (conj attributes :id) data)
         _ (validate! data
                      :project/name v/required
                      :project/code v/required

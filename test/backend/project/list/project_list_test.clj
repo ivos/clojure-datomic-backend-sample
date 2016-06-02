@@ -20,8 +20,8 @@
         db (:db-after @(d/transact (d/connect db-uri) setup))]
     (testing
       "Full query"
-      (let [params {:name "namE-key"
-                    :code "code-key"
+      (let [params {:name "nAmE-kEy"
+                    :code "CoDe-KeY"
                     :visibility "private"}
             request (create-request params)
             response (handler request)

@@ -1,8 +1,8 @@
 [
  {:db/id #db/id[:db.part/backend -1]
   :entity/type :entity.type/project
-  :project/name "Some nAmE-key ada"
-  :project/code "some-code-key-aaa"
+  :project/name "Some NAME-KEY ada"
+  :project/code "some-CODE-KEY-aaa"
   :project/visibility :project.visibility/private
   :entity/version 1
   }

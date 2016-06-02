@@ -36,8 +36,8 @@
 		"uri": "http://localhost:3000/projects/285873023222775"
 	},
 	{
-		"name": "Some nAmE-key ada",
-		"code": "some-code-key-aaa",
+		"name": "Some NAME-KEY ada",
+		"code": "some-CODE-KEY-aaa",
 		"visibility": "private",
 		"uri": "http://localhost:3000/projects/285873023222774"
 	},

@@ -3,10 +3,18 @@
             [datomic.api :as d]
             ))
 
+(defn- prepare-query-value
+  [db value]
+  (cond
+    (nil? value) :nil
+    (and (string? value) (empty? value)) :nil
+    (keyword? value) (d/entid db value)
+    :otherwise value
+    ))
+
 (defn prepare-query-params
-  [data attributes]
-  (let [prepare-query-value #(if (or (nil? %) (and (string? %) (empty? %))) :nil %)
-        prepare-query-param #(vector % (prepare-query-value (get data %)))]
+  [data attributes db]
+  (let [prepare-query-param #(vector % (prepare-query-value db (get data %)))]
     (into {} (map prepare-query-param attributes))))
 
 (defn query-string
@@ -15,7 +23,6 @@
       (.contains (.toLowerCase db-value) (.toLowerCase query-param))))
 
 (defn query-keyword
-  [db db-value query-param]
+  [db-value query-param]
   (or (= :nil query-param)
-      (when-let [query-eids (d/q '[:find ?e :in $ ?param :where [?e :db/ident ?param]] db query-param)]
-        (= db-value (ffirst query-eids)))))
+      (= db-value query-param)))

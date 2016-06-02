@@ -52,7 +52,7 @@
                 empty-strings-to-nils
                 (ns-keys attributes)
                 (ns-value :project/visibility :project.visibility)
-                (prepare-query-params attributes)
+                (prepare-query-params attributes db)
                 )
         _ (log/debug "Listing" query)
         eids (d/q '[:find ?e
@@ -60,7 +60,7 @@
                     :where [?e :entity/type ?type]
                     [?e :project/name ?name] [(backend.datomic/query-string ?name ?name-param)]
                     [?e :project/code ?code] [(backend.datomic/query-string ?code ?code-param)]
-                    [?e :project/visibility ?visibility] [(backend.datomic/query-keyword $ ?visibility ?visibility-param)]
+                    [?e :project/visibility ?visibility] [(backend.datomic/query-keyword ?visibility ?visibility-param)]
                     ]
                   db :entity.type/project (:project/name query) (:project/code query) (:project/visibility query))
         data (map #(merge {:id (first %)} (d/touch (d/entity db (first %)))) eids)

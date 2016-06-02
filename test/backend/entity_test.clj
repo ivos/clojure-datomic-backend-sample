@@ -3,6 +3,60 @@
             [slingshot.slingshot :refer [try+]]
             [backend.entity :refer :all]))
 
+(deftest empty-strings-to-nils-test
+  (testing
+    (let [data {:with-value "abc"
+                :empty-string ""
+                :number-zero 0
+                :false-bool false
+                :number-non-zero 123
+                :keyword :keyword-value}]
+      (is (= (empty-strings-to-nils data)
+             {:with-value "abc"
+              :empty-string nil
+              :number-zero 0
+              :false-bool false
+              :number-non-zero 123
+              :keyword :keyword-value}
+             ))))
+  )
+
+(deftest remove-nil-values-test
+  (testing
+    (let [data {:with-value "abc"
+                :nil-value1 nil
+                :number-zero 0
+                :false-bool false
+                :nil-value2 nil
+                :number-non-zero 123
+                :keyword :keyword-value}]
+      (is (= (remove-nil-values data)
+             {:with-value "abc"
+              :number-zero 0
+              :false-bool false
+              :number-non-zero 123
+              :keyword :keyword-value}
+             ))))
+  )
+
+(deftest ns-value-test
+  (testing
+    "Ok."
+    (let [data {:a 1 :an-attr "a-value"}]
+      (is (= {:a 1 :an-attr :a-ns/a-value}
+             (ns-value data :an-attr :a-ns)))))
+  (testing
+    "Attribute value is nil."
+    (let [data {:a 1 :an-attr nil}]
+      (is (= {:a 1 :an-attr nil}
+             (ns-value data :an-attr :a-ns)))))
+  (testing
+    "Attribute is not present."
+    (let [data {:a 1}]
+      (is (= {:a 1}
+             (ns-value data :an-attr :a-ns)))))
+  )
+
 (deftest ns-keys-test
   (testing
     "Found is replaced."
@@ -19,6 +73,11 @@
     (is (= 
           {:my-entity/attr-a 1 :other-entity/attr-b 2}
           (ns-keys {:attr-a 1 :attr-b 2} [:my-entity/attr-a :other-entity/attr-b]))))
+  (testing
+    "Nil value."
+    (is (= 
+          {:my-entity/attr nil}
+          (ns-keys {:attr nil} [:my-entity/attr]))))
   )
 
 (deftest entity-create-tx-test

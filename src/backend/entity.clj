@@ -4,11 +4,24 @@
             [slingshot.slingshot :refer [throw+]]
             ))
 
+(defn empty-strings-to-nils
+  "Convert empty string values to nils."
+  [data]
+  (let [empty-string-to-nil #(if (and (string? %) (empty? %)) nil %)]
+    (zipmap (keys data) (map empty-string-to-nil (vals data)))))
+
+; TODO remove if unused:
+(defn remove-nil-values
+  "Remove mappings with nil values."
+  [data]
+  (into {} (remove (comp nil? val) data)))
+
 (defn ns-value
   [data attribute ns]
-  (when-some [value (get data attribute)]
+  (if-some [value (get data attribute)]
     (let [namespaced (keyword (name ns) value)]
-      (assoc data attribute namespaced))))
+      (assoc data attribute namespaced))
+    data))
 
 (defn strip-value-ns
   [data attribute]

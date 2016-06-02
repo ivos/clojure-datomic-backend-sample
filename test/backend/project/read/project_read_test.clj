@@ -31,7 +31,7 @@
             response-body (read-json "backend/project/read/full-response")
             ]
         ;(clojure.pprint/pprint response)
-        (is-response-ok response response-body 123)
+        (is-response-ok-version response response-body 123)
         ))
     (testing
       "Not found"

@@ -41,7 +41,7 @@
                             id)
             ]
         ;(clojure.pprint/pprint response)
-        (is-response-ok response request-body 124)
+        (is-response-ok-version response request-body 124)
         ;(clojure.pprint/pprint updated)
         (is (= (assoc verify :db/id id) updated))
         ))

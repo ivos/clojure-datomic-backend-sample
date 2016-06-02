@@ -37,6 +37,13 @@
     ))
 
 (defn is-response-ok
+  [response expected-body]
+  (is (= (:status response) 200))
+  (is-response-json response)
+  (is (= (:body response) expected-body))
+  )
+
+(defn is-response-ok-version
   [response expected-body version]
   (is (= (:status response) 200))
   (is-response-json response)

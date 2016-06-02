@@ -1,10 +1,12 @@
 (ns backend.project
-  (:require [clojure.tools.logging :as log]
+  (:require [clojure.string :as string]
+            [clojure.tools.logging :as log]
             [datomic.api :as d]
             [ring.util.response :refer :all]
             [bouncer.validators :as v]
             [slingshot.slingshot :refer [throw+]]
             [backend.entity :refer :all]
+            [backend.datomic :refer :all]
             [backend.validation :refer [verify-keys! validate!]]
             ))
 
@@ -41,6 +43,36 @@
                    (created result)
                    (header "ETag" (:entity/version saved)))]
     response))
+
+(defn project-list
+  [request]
+  (let [conn (:connection request)
+        db (d/db conn)
+        query (-> (:params request)
+                empty-strings-to-nils
+                (ns-keys attributes)
+                (ns-value :project/visibility :project.visibility)
+                (prepare-query-params attributes)
+                )
+        _ (log/debug "Listing" query)
+        eids (d/q '[:find ?e
+                    :in $ ?type ?name-param ?code-param ?visibility-param
+                    :where [?e :entity/type ?type]
+                    [?e :project/name ?name] [(backend.datomic/query-string ?name ?name-param)]
+                    [?e :project/code ?code] [(backend.datomic/query-string ?code ?code-param)]
+                    [?e :project/visibility ?visibility] [(backend.datomic/query-keyword $ ?visibility ?visibility-param)]
+                    ]
+                  db :entity.type/project (:project/name query) (:project/code query) (:project/visibility query))
+        data (map #(merge {:id (first %)} (d/touch (d/entity db (first %)))) eids)
+        sorted (sort-by (juxt (comp string/lower-case :project/name) (comp string/lower-case :project/code)) data)
+        to-result #(-> %
+                     (assoc :uri (str (get-in request [:config :app :deploy-url]) "projects/" (:id %)))
+                     (dissoc :id :entity/version :entity/type)
+                     (strip-value-ns :project/visibility)
+                     strip-keys-ns)
+        result (map to-result sorted)
+        ]
+    (response result)))
 
 (defn project-read
   [request]

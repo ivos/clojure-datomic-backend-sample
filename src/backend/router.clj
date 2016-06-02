@@ -5,8 +5,8 @@
             [ring.adapter.jetty :refer [run-jetty]]
             [ring.util.response :refer [not-found header]]
             [ring.middleware.json :refer [wrap-json-body wrap-json-response]]
-;            [ring.middleware.params :refer :all]
-;            [ring.middleware.keyword-params :refer :all]
+            [ring.middleware.params :refer :all]
+            [ring.middleware.keyword-params :refer :all]
             [datomic.api :as d]
             [slingshot.slingshot :refer [try+]]
             [backend.validation :refer [wrap-validation]]
@@ -16,6 +16,7 @@
 (defroutes app-handler
   (GET "/" [] "<h1>Hello compojure</h1>")
   (POST "/projects" request (project-create request))
+  (GET "/projects" request (project-list request))
   (GET "/projects/:id{[0-9]+}" request (project-read request))
   (PUT "/projects/:id{[0-9]+}" request (project-update request))
   (DELETE "/projects/:id{[0-9]+}" request (project-delete request))
@@ -62,13 +63,13 @@
             [(:protocol request)
              (-> request :request-method name clojure.string/upper-case)
              (:uri request)])
-          body (if (#{:get :head :delete} (:request-method request))
-                 ""
+          body (when-not (#{:get :head :delete} (:request-method request))
                  (:body request))]
       (log/info ">>> Request"
                 request-info
-                body
-                (-> request :headers (dissoc "host" "content-length")))
+                "Params:" (:params request)
+                "Body:" body
+                "Headers:" (-> request :headers (dissoc "host" "content-length")))
       (let [response (handler request)]
         (log/info "<<< Response" request-info response)
         response))))
@@ -82,8 +83,8 @@
     wrap-log
     (wrap-json-body (:json config))
     wrap-json-response
-;    wrap-keyword-params
-;    wrap-params
+    wrap-keyword-params
+    wrap-params
     (wrap-connection (get-in config [:db :uri]))
     (wrap-config config)
     ))

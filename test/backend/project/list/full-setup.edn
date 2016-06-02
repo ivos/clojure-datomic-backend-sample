@@ -1,0 +1,61 @@
+[
+ {:db/id #db/id[:db.part/backend -1]
+  :entity/type :entity.type/project
+  :project/name "Some nAmE-key ada"
+  :project/code "some-code-key-aaa"
+  :project/visibility :project.visibility/private
+  :entity/version 1
+  }
+ {:db/id #db/id[:db.part/backend -2]
+  :entity/type :entity.type/project
+  :project/name "Some name-key aca"
+  :project/code "some-code-key-ana"
+  :project/visibility :project.visibility/private
+  :entity/version 1
+  }
+ {:db/id #db/id[:db.part/backend -3]
+  :entity/type :entity.type/project
+  :project/name "Some name-key aca"
+  :project/code "some-code-key-ama"
+  :project/visibility :project.visibility/private
+  :entity/version 1
+  }
+ {:db/id #db/id[:db.part/backend -4]
+  :entity/type :entity.type/project
+  :project/name "Some name-key aba"
+  :project/code "some-code-key-aya"
+  :project/visibility :project.visibility/private
+  :entity/version 1
+  }
+ {:db/id #db/id[:db.part/backend -5]
+  :entity/type :entity.type/project
+  :project/name "Some name-key aaa"
+  :project/code "some-code-key-aza"
+  :project/visibility :project.visibility/private
+  :entity/version 1
+  }
+ ; name not match
+ {:db/id #db/id[:db.part/backend -6]
+  :entity/type :entity.type/project
+  :project/name "Some name-kez aaa"
+  :project/code "some-code-key-aaa"
+  :project/visibility :project.visibility/private
+  :entity/version 1
+  }
+ ; code not match
+ {:db/id #db/id[:db.part/backend -7]
+  :entity/type :entity.type/project
+  :project/name "Some name-key aaa"
+  :project/code "some-code-kez-aaa"
+  :project/visibility :project.visibility/private
+  :entity/version 1
+  }
+ ; visibility not match
+ {:db/id #db/id[:db.part/backend -8]
+  :entity/type :entity.type/project
+  :project/name "Some name-key aaa"
+  :project/code "some-code-key-aaa"
+  :project/visibility :project.visibility/public
+  :entity/version 1
+  }
+ ]

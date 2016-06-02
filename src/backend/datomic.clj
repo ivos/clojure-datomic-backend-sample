@@ -8,14 +8,16 @@
   (cond
     (nil? value) :nil
     (and (string? value) (empty? value)) :nil
-    (keyword? value) (d/entid db value)
+    (keyword? value) (if-let [eid (d/entid db value)]
+                       eid
+                       value)
     :otherwise value
     ))
 
 (defn prepare-query-params
   [data attributes db]
   (let [prepare-query-param #(vector % (prepare-query-value db (get data %)))]
-    (into {} (map prepare-query-param attributes))))
+    (into data (map prepare-query-param attributes))))
 
 (defn query-string
   [db-value query-param]

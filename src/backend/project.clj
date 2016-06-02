@@ -55,6 +55,7 @@
                 (prepare-query-params attributes db)
                 )
         _ (log/debug "Listing" query)
+        _ (verify-keys! attributes query)
         eids (d/q '[:find ?e
                     :in $ ?type ?name-param ?code-param ?visibility-param
                     :where [?e :entity/type ?type]

@@ -4,23 +4,22 @@
 
 (deftest prepare-query-params-test
   (testing
-    (let [attributes [:with-value :empty-string :a-nil :number-zero :false-bool :number-non-zero :keyword :missing]
+    (let [attributes [:with-value :empty-string :a-nil :number-zero :false-bool :number-non-zero :missing]
           data {:with-value "abc"
                 :empty-string ""
                 :a-nil nil
                 :number-zero 0
                 :false-bool false
                 :number-non-zero 123
-                :keyword :keyword-value
                 :invalid "some-value"}]
-      (is (= (prepare-query-params data attributes)
+      (is (= (prepare-query-params data attributes nil)
              {:with-value "abc"
               :empty-string :nil
               :a-nil :nil
               :number-zero 0
               :false-bool false
               :number-non-zero 123
-              :keyword :keyword-value
+              :invalid "some-value"
               :missing :nil}
              ))))
   )

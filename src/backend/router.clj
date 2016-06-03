@@ -9,8 +9,8 @@
             [ring.middleware.keyword-params :refer :all]
             [datomic.api :as d]
             [slingshot.slingshot :refer [try+]]
-            [backend.validation :refer [wrap-validation]]
-            [backend.project :refer :all]
+            [backend.support.validation :refer [wrap-validation]]
+            [backend.logic.project :refer :all]
             ))
 
 (defroutes app-handler

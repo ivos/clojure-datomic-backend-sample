@@ -1,7 +1,7 @@
-(ns backend.entity-test
+(ns backend.support.entity-test
   (:require [clojure.test :refer :all]
             [slingshot.slingshot :refer [try+]]
-            [backend.entity :refer :all]))
+            [backend.support.entity :refer :all]))
 
 (deftest empty-strings-to-nils-test
   (testing

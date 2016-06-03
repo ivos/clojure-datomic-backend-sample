@@ -1,8 +1,8 @@
-(ns backend.datomic
+(ns backend.support.datomic
   (:require [clojure.tools.logging :as log]
             [datomic.api :as d]
             [slingshot.slingshot :refer [throw+]]
-            [backend.ring :refer [status-code]]
+            [backend.support.ring :refer [status-code]]
             ))
 
 (defn- prepare-query-value

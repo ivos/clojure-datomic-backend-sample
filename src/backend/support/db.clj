@@ -1,8 +1,8 @@
-(ns backend.db
+(ns backend.support.db
   (:require [io.rkn.conformity :as c]
             [datomic.api :as d]
             [clojure.tools.logging :as log]
-            [backend.resources :refer [list-resources]]
+            [backend.support.resources :refer [list-resources]]
             ))
 
 (defn delete-database!

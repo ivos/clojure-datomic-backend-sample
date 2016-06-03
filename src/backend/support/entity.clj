@@ -1,4 +1,4 @@
-(ns backend.entity
+(ns backend.support.entity
   (:require [clojure.tools.logging :as log]
             [datomic.api :as d]
             [slingshot.slingshot :refer [throw+]]

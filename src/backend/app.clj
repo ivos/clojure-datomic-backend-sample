@@ -1,8 +1,8 @@
 (ns backend.app
   (:gen-class)
   (:require [clojure.tools.logging :as log]
-            [backend.config :refer :all]
-            [backend.db :refer :all]
+            [backend.support.config :refer :all]
+            [backend.support.db :refer :all]
             [backend.router :refer :all]))
 
 (def config (read-config))

@@ -2,7 +2,7 @@
   (:require [clojure.test :refer :all]
             [ring.mock.request :as mock]
             [datomic.api :as d]
-            [backend.db :refer :all]
+            [backend.support.db :refer :all]
             [backend.router :refer :all]
             [backend.test-support :refer :all]
             ))

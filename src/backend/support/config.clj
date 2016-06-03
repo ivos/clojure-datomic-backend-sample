@@ -1,4 +1,4 @@
-(ns backend.config
+(ns backend.support.config
   (:require [clojure.java.io :refer [resource]]
             [clojure.edn :as edn]))
 

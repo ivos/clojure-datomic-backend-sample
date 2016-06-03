@@ -1,4 +1,4 @@
-(ns backend.ring
+(ns backend.support.ring
   (:require [ring.util.response :refer :all]
             [slingshot.slingshot :refer [throw+]]
             ))

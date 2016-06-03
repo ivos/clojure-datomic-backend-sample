@@ -1,9 +1,9 @@
-(ns backend.validation
+(ns backend.support.validation
   (:require [clojure.set :as set]
             [clojure.tools.logging :as log]
             [bouncer.core :as b]
             [slingshot.slingshot :refer [throw+ try+]]
-            [backend.ring :refer [status-code]]
+            [backend.support.ring :refer [status-code]]
             ))
 
 (defn- validation-message-fn

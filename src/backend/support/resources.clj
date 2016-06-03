@@ -1,4 +1,4 @@
-(ns backend.resources
+(ns backend.support.resources
   (:require [clojure.java.io :refer [resource file]]))
 
 (def ^:private current-running-jar

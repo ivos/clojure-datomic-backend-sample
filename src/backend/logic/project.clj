@@ -1,13 +1,13 @@
-(ns backend.project
+(ns backend.logic.project
   (:require [clojure.string :as string]
             [clojure.tools.logging :as log]
             [datomic.api :as d]
             [ring.util.response :refer :all]
             [bouncer.validators :as v]
-            [backend.ring :refer :all]
-            [backend.entity :refer :all]
-            [backend.datomic :refer :all]
-            [backend.validation :refer [verify-keys! validate!]]
+            [backend.support.ring :refer :all]
+            [backend.support.entity :refer :all]
+            [backend.support.datomic :refer :all]
+            [backend.support.validation :refer [verify-keys! validate!]]
             ))
 
 (def ^:private db-partition :db.part/backend)
@@ -82,9 +82,9 @@
         eids (d/q '[:find ?e
                     :in $ ?type ?name-param ?code-param ?visibility-param
                     :where [?e :entity/type ?type]
-                    [?e :project/name ?name] [(backend.datomic/query-string ?name ?name-param)]
-                    [?e :project/code ?code] [(backend.datomic/query-string ?code ?code-param)]
-                    [?e :project/visibility ?visibility] [(backend.datomic/query-keyword ?visibility ?visibility-param)]
+                    [?e :project/name ?name] [(backend.support.datomic/query-string ?name ?name-param)]
+                    [?e :project/code ?code] [(backend.support.datomic/query-string ?code ?code-param)]
+                    [?e :project/visibility ?visibility] [(backend.support.datomic/query-keyword ?visibility ?visibility-param)]
                     ]
                   db :entity.type/project
                   (:project/name query) (:project/code query) (:project/visibility query))

@@ -1,6 +1,6 @@
-(ns backend.datomic-test
+(ns backend.support.datomic-test
   (:require [clojure.test :refer :all]
-            [backend.datomic :refer :all]))
+            [backend.support.datomic :refer :all]))
 
 (deftest prepare-query-params-test
   (testing

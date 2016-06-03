@@ -1,7 +1,7 @@
-(ns backend.validation-test
+(ns backend.support.validation-test
   (:require [clojure.test :refer :all]
             [slingshot.slingshot :refer [try+]]
-            [backend.validation :refer :all]))
+            [backend.support.validation :refer :all]))
 
 (deftest verify-keys!-test
   (testing
@@ -18,7 +18,7 @@
       (try+ (do
               (verify-keys! attributes data)
               (is false "Should throw"))
-        (catch [:type :backend.validation/validation-failure] {:keys [errors]}
+        (catch [:type :backend.support.validation/validation-failure] {:keys [errors]}
           (is (= errors
                  {:e ["invalid.attribute"] :f ["invalid.attribute"]})))
         ))

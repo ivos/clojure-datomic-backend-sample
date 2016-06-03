@@ -13,13 +13,18 @@
             [backend.logic.project :refer :all]
             ))
 
+(defroutes ^:private project-routes
+  (context "/projects" []
+           (POST "/" request (project-create request))
+           (GET "/" request (project-list request))
+           (GET "/:id{[0-9]+}" request (project-read request))
+           (PUT "/:id{[0-9]+}" request (project-update request))
+           (DELETE "/:id{[0-9]+}" request (project-delete request))
+           ))
+
 (defroutes app-handler
   (GET "/" [] "<h1>Hello compojure</h1>")
-  (POST "/projects" request (project-create request))
-  (GET "/projects" request (project-list request))
-  (GET "/projects/:id{[0-9]+}" request (project-read request))
-  (PUT "/projects/:id{[0-9]+}" request (project-update request))
-  (DELETE "/projects/:id{[0-9]+}" request (project-delete request))
+  project-routes
   (route/not-found (fn [_] (not-found {:code :entity.not.found}))))
 
 (defn- wrap-config

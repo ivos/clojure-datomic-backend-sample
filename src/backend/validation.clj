@@ -3,6 +3,7 @@
             [clojure.tools.logging :as log]
             [bouncer.core :as b]
             [slingshot.slingshot :refer [throw+ try+]]
+            [backend.ring :refer [status-code]]
             ))
 
 (defn- validation-message-fn
@@ -31,13 +32,14 @@
     (throw+ {:type ::validation-failure :errors errors})))
 
 (defn wrap-validation
-  "Ring middleware to catch ValidationException and convert it to HTTP 422 response."
+  "Ring middleware to catch ValidationException and convert it to
+   HTTP 422 Unprocessable Entity response."
   [handler]
   (fn
     [request]
     (try+ (handler request)
       (catch [:type ::validation-failure] {:keys [errors]}
-        (let [response {:status 422
+        (let [response {:status (status-code :unprocessable-entity)
                         :body errors}]
           (log/info "Returning validation failure response" response)
           response)))))

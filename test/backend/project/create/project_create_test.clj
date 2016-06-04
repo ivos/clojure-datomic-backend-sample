@@ -3,6 +3,8 @@
             [ring.mock.request :as mock]
             [datomic.api :as d]
             [backend.support.db :refer :all]
+            [backend.support.datomic :refer :all]
+            [backend.support.ring :refer :all]
             [backend.router :refer :all]
             [backend.test-support :refer :all]
             ))
@@ -24,16 +26,14 @@
             request (create-request request-body)
             response (handler request)
             location (get-in response [:headers "Location"])
-            id (-> location (.split "/") last Long.)
+            id (-> location (.split "/") last)
             db (-> db-uri d/connect d/db)
-            created (d/pull db '[* {:project/visibility [:db/ident]
-                                    :entity/type [:db/ident]}]
-                            id)
+            eid (get-eid db :entity.type/project :project/code id)
+            created (get-entity db eid)
             ]
-        ;(clojure.pprint/pprint response)
         (is-response-created response request-body config)
-        ;(clojure.pprint/pprint created)
-        (is (= (assoc verify :db/id id) created))
+        (is (= verify (dissoc created :eid)))
+        (is (= id "code-1"))
         ))
     (testing
       "Empty"
@@ -42,7 +42,7 @@
             request (create-request request-body)
             response (handler request)
             ]
-        (is (= (:status response) 422))
+        (is (= (:status response) (:unprocessable-entity status-code)))
         (is-response-json response)
         (is (= (:body response) response-body))
         ))
@@ -53,7 +53,7 @@
             request (create-request request-body)
             response (handler request)
             ]
-        (is (= (:status response) 422))
+        (is (= (:status response) (:unprocessable-entity status-code)))
         (is-response-json response)
         (is (= (:body response) response-body))
         ))
@@ -64,7 +64,7 @@
             request (create-request request-body)
             response (handler request)
             ]
-        (is (= (:status response) 422))
+        (is (= (:status response) (:unprocessable-entity status-code)))
         (is-response-json response)
         (is (= (:body response) response-body))
         ))

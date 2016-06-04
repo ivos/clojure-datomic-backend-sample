@@ -1,8 +1,7 @@
 {
- :db/id 285873023222842,
+ :entity/type :entity.type/project,
  :entity/version 1,
- :entity/type {:db/ident :entity.type/project},
  :project/name "Name 1",
  :project/code "code-1",
- :project/visibility {:db/ident :project.visibility/private}
+ :project/visibility :project.visibility/private
  }

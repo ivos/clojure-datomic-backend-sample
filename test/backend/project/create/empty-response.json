@@ -1,8 +1,8 @@
 {
-	"project/name": [
+	"project/code": [
 		"required"
 	],
-	"project/code": [
+	"project/name": [
 		"required"
 	],
 	"project/visibility": [

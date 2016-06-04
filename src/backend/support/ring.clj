@@ -9,6 +9,7 @@
    :created 201
    :no-content 204
    :not-found 404
+   :conflict 409
    :unprocessable-entity 422
    :precondition-required 428
    })

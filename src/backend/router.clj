@@ -17,9 +17,9 @@
   (context "/projects" []
            (POST "/" request (project-create request))
            (GET "/" request (project-list request))
-           (GET "/:id{[0-9]+}" request (project-read request))
-           (PUT "/:id{[0-9]+}" request (project-update request))
-           (DELETE "/:id{[0-9]+}" request (project-delete request))
+           (GET "/:id" request (project-read request))
+           (PUT "/:id" request (project-update request))
+           (DELETE "/:id" request (project-delete request))
            ))
 
 (defroutes app-handler

@@ -3,6 +3,7 @@
             [ring.mock.request :as mock]
             [datomic.api :as d]
             [backend.support.db :refer :all]
+            [backend.support.datomic :refer :all]
             [backend.router :refer :all]
             [backend.test-support :refer :all]
             ))
@@ -23,37 +24,33 @@
         _ (start-database! db-uri)
         setup (read-edn "backend/project/update/full-setup")
         db (:db-after @(d/transact (d/connect db-uri) setup))
-        id (-> (d/q '[:find ?e
-                          :in $ ?code
-                          :where [?e :project/code ?code]]
-                        db
-                        "code-full")
-                 ffirst)]
+        eid (get-eid db :entity.type/project :project/code "code-full")
+        ]
     (testing
       "Full"
       (let [request-body (read-json "backend/project/update/full-request")
             verify (read-edn "backend/project/update/full-verify")
-            request (create-request id 123 request-body)
+            request (create-request "code-full" 123 request-body)
             response (handler request)
+            location (get-in response [:headers "Location"])
+            id (-> location (.split "/") last)
             db-after (-> db-uri d/connect d/db)
-            updated (d/pull db-after '[* {:project/visibility [:db/ident]
-                                          :entity/type [:db/ident]}]
-                            id)
+            updated (get-entity db-after eid)
             ]
         ;(clojure.pprint/pprint response)
         (is-response-ok-version response request-body 124)
-        ;(clojure.pprint/pprint updated)
-        (is (= (assoc verify :db/id id) updated))
+        (is (= verify (dissoc updated :eid)))
+        (is (= id "code-full-a"))
         ))
     (testing
       "Not found"
       (let [request-body (read-json "backend/project/update/full-request")]
-        (not-found-test handler (create-request 10 123 request-body))))
+        (not-found-test handler (create-request "non-existent" 123 request-body))))
     (testing
       "Empty"
       (let [request-body "{}"
             response-body (read-json "backend/project/update/empty-response")
-            request (create-request id 123 request-body)
+            request (create-request "code-optimistic" 123 request-body)
             response (handler request)
             ]
         (is (= (:status response) 422))
@@ -62,42 +59,28 @@
         ))
     (testing
       "Optimistic lock failure"
-      (let [id (-> (d/q '[:find ?e
-                          :in $ ?code
-                          :where [?e :project/code ?code]]
-                        db
-                        "code-optimistic")
-                 ffirst)
+      (let [eid (get-eid db :entity.type/project :project/code "code-optimistic")
             request-body (read-json "backend/project/update/full-request")
             verify (read-edn "backend/project/update/optimistic-verify")
-            request (create-request id 122 request-body)
+            request (create-request "code-optimistic" 122 request-body)
             response (handler request)
             db-after (-> db-uri d/connect d/db)
-            updated (d/pull db-after '[* {:project/visibility [:db/ident]
-                                          :entity/type [:db/ident]}]
-                            id)
+            updated (get-entity db-after eid)
             ]
         (is-response-conflict response 123) ; TODO switch to precondition-failed?
-        (is (= (assoc verify :db/id id) updated))
+        (is (= verify (dissoc updated :eid)))
         ))
     (testing
       "Version missing"
-      (let [id (-> (d/q '[:find ?e
-                          :in $ ?code
-                          :where [?e :project/code ?code]]
-                        db
-                        "code-optimistic")
-                 ffirst)
+      (let [eid (get-eid db :entity.type/project :project/code "code-optimistic")
             request-body (read-json "backend/project/update/full-request")
             verify (read-edn "backend/project/update/optimistic-verify")
-            request (create-request id nil request-body)
+            request (create-request "code-optimistic" nil request-body)
             response (handler request)
             db-after (-> db-uri d/connect d/db)
-            updated (d/pull db-after '[* {:project/visibility [:db/ident]
-                                          :entity/type [:db/ident]}]
-                            id)
+            updated (get-entity db-after eid)
             ]
         (is-response-precondition-required response)
-        (is (= (assoc verify :db/id id) updated))
+        (is (= verify (dissoc updated :eid)))
         ))
     ))

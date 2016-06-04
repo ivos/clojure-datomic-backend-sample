@@ -11,15 +11,15 @@
             ))
 
 (def ^:private db-partition :db.part/backend)
-(def ^:private attributes [:project/name :project/code :project/visibility])
+(def ^:private attributes [:project/code :project/name :project/visibility])
 (def ^:private visibilities #{:project.visibility/public :project.visibility/private})
 
 (defn- get-request-data
-  [request id]
+  [request eid]
   (let [data (-> (:body request)
                (ns-keys attributes)
                (ns-value :project/visibility :project.visibility)
-               (assoc :id id))]
+               (assoc :eid eid))]
     (log/debug "Request data" data)
     data))
 
@@ -35,22 +35,22 @@
 
 (defn- validate-common!
   [data]
-  (verify-keys! (conj attributes :id) data)
+  (verify-keys! (conj attributes :eid) data)
   (validate! data
-             :project/name v/required
              :project/code v/required
+             :project/name v/required
              :project/visibility [[v/required] [v/member visibilities]]))
 
 (defn- get-result
   [data]
   (-> data
-    (dissoc :id :entity/version :entity/type)
+    (dissoc :eid :entity/version :entity/type)
     (strip-value-ns :project/visibility)
     strip-keys-ns))
 
 (defn- get-detail-uri
-  [request id]
-  (str (get-in request [:config :app :deploy-url]) "projects/" id))
+  [request data]
+  (str (get-in request [:config :app :deploy-url]) "projects/" (:project/code data)))
 
 ; public functions
 
@@ -64,11 +64,11 @@
         tx-result @(d/transact conn tx)
         _ (log/trace "Tx result" tx-result)
         db-after (:db-after tx-result)
-        id (d/resolve-tempid db-after (:tempids tx-result) tempid)
-        saved (get-entity db-after id)
+        eid (d/resolve-tempid db-after (:tempids tx-result) tempid)
+        saved (get-entity db-after eid)
         _ (log/debug "Saved" saved)
         result (get-result saved)
-        response (-> (created (get-detail-uri request id) result)
+        response (-> (created (get-detail-uri request saved) result)
                    (header-etag saved))]
     response))
 
@@ -94,8 +94,8 @@
                           (comp string/lower-case :project/code))
                         data)
         to-result #(-> %
-                     get-result
-                     (assoc :uri (get-detail-uri request (:id %))))
+                     (assoc :uri (get-detail-uri request %))
+                     get-result)
         result (map to-result sorted)
         ]
     (response result)))
@@ -104,8 +104,8 @@
   [request]
   (let [conn (:connection request)
         db (d/db conn)
-        id (-> request :params :id Long.)
-        eid (get-eid db id :entity.type/project)
+        id (-> request :params :id)
+        eid (get-eid db :entity.type/project :project/code id)
         data (get-entity db eid)
         _ (log/debug "Read" data)
         result (get-result data)
@@ -117,22 +117,23 @@
   [request]
   (let [conn (:connection request)
         db (d/db conn)
-        id (-> request :params :id Long.)
-        data (get-request-data request id)
+        id (-> request :params :id)
         version (get-if-match request)
+        eid (get-eid db :entity.type/project :project/code id)
+        data (get-request-data request eid)
         _ (log/debug "Updating" data)
         _ (validate-common! data)
-        eid (get-eid db id :entity.type/project)
         db-data (get-entity db eid)
         _ (log/debug "Read" db-data)
         tx (entity-update-tx db-partition :entity.type/project attributes db-data data version)
         tx-result @(d/transact conn tx)
         _ (log/trace "Tx result" tx-result)
         db-after (:db-after tx-result)
-        saved (get-entity db-after id)
+        saved (get-entity db-after eid)
         _ (log/debug "Saved" saved)
         result (get-result saved)
         response (-> (response result)
+                   (header "Location" (get-detail-uri request saved))
                    (header-etag saved))]
     response))
 
@@ -140,12 +141,12 @@
   [request]
   (let [conn (:connection request)
         db (d/db conn)
-        id (-> request :params :id Long.)
+        id (-> request :params :id)
         version (get-if-match request)
-        eid (get-eid db id :entity.type/project)
+        eid (get-eid db :entity.type/project :project/code id)
         db-data (get-entity db eid)
         _ (log/debug "Read" db-data)
-        tx (entity-delete-tx db-data id version)
+        tx (entity-delete-tx db-data eid version)
         tx-result @(d/transact conn tx)
         _ (log/trace "Tx result" tx-result)
         db-after (:db-after tx-result)

@@ -3,48 +3,48 @@
 		"name": "Some name-key aaa",
 		"code": "some-code-key-aaa",
 		"visibility": "public",
-		"uri": "http://localhost:3000/projects/285873023222781"
+		"uri": "http://localhost:3000/projects/some-code-key-aaa"
 	},
 	{
 		"name": "Some name-key aaa",
 		"code": "some-code-key-aza",
 		"visibility": "private",
-		"uri": "http://localhost:3000/projects/285873023222778"
+		"uri": "http://localhost:3000/projects/some-code-key-aza"
 	},
 	{
 		"name": "Some name-key aaa",
 		"code": "some-code-kez-aaa",
 		"visibility": "private",
-		"uri": "http://localhost:3000/projects/285873023222780"
+		"uri": "http://localhost:3000/projects/some-code-kez-aaa"
 	},
 	{
 		"name": "Some name-key aba",
 		"code": "some-code-key-aya",
 		"visibility": "private",
-		"uri": "http://localhost:3000/projects/285873023222777"
+		"uri": "http://localhost:3000/projects/some-code-key-aya"
 	},
 	{
 		"name": "Some name-key aca",
 		"code": "some-code-key-ama",
 		"visibility": "private",
-		"uri": "http://localhost:3000/projects/285873023222776"
+		"uri": "http://localhost:3000/projects/some-code-key-ama"
 	},
 	{
 		"name": "Some name-key aca",
 		"code": "some-code-key-ana",
 		"visibility": "private",
-		"uri": "http://localhost:3000/projects/285873023222775"
+		"uri": "http://localhost:3000/projects/some-code-key-ana"
 	},
 	{
 		"name": "Some NAME-KEY ada",
 		"code": "some-CODE-KEY-aaa",
 		"visibility": "private",
-		"uri": "http://localhost:3000/projects/285873023222774"
+		"uri": "http://localhost:3000/projects/some-CODE-KEY-aaa"
 	},
 	{
 		"name": "Some name-kez aaa",
 		"code": "some-code-key-aaa",
 		"visibility": "private",
-		"uri": "http://localhost:3000/projects/285873023222779"
+		"uri": "http://localhost:3000/projects/some-code-key-aaa"
 	}
 ]

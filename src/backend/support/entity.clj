@@ -47,8 +47,8 @@
         value (get data attribute)]
     (cond
       (= db-value value) nil
-      (nil? value) [:db/retract (:id data) attribute db-value]
-      :otherwise [:db/add (:id data) attribute value])))
+      (nil? value) [:db/retract (:eid data) attribute db-value]
+      :otherwise [:db/add (:eid data) attribute value])))
 
 (defn- get-version-number
   [db-data version]
@@ -74,20 +74,20 @@
   (let [update-txs (map (partial attribute-tx db-data data) attributes)
         filtered (filter identity update-txs)
         version-number (get-version-number db-data version)
-        id (:id data)
+        eid (:eid data)
         tx (conj
              filtered
-             [:db/add id :entity/version (inc version-number)]
-             [:optimistic-lock id version-number])]
+             [:db/add eid :entity/version (inc version-number)]
+             [:optimistic-lock eid version-number])]
     (log/trace "Update tx" tx)
     tx))
 
 (defn entity-delete-tx
-  [db-data id version]
-  {:pre [(integer? id) (or (string? version) (integer? version))]}
+  [db-data eid version]
+  {:pre [(integer? eid) (or (string? version) (integer? version))]}
   (let [version-number (get-version-number db-data version)
-        tx [[:optimistic-lock id version-number]
-            [:db.fn/retractEntity id]]
+        tx [[:optimistic-lock eid version-number]
+            [:db.fn/retractEntity eid]]
         ]
     (log/trace "Delete tx" tx)
     tx))

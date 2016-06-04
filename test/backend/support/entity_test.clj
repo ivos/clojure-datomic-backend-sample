@@ -83,17 +83,17 @@
 (deftest entity-create-tx-test
   (testing
     (let [attributes [:add1 :add2 :keep-nil3]
-          data {:id :v-id
+          data {:eid :v-eid
                 :add1 :v-add1
                 :add2 :v-add2
                 :other :v-other}
           tx (entity-create-tx :db-part1 :type1 attributes data)
           ]
       (is (=
-            '([:db/add :v-id :add1 :v-add1]
-               [:db/add :v-id :add2 :v-add2]
-               [:db/add :v-id :entity/version 1]
-               [:db/add :v-id :entity/type :type1])
+            '([:db/add :v-eid :add1 :v-add1]
+               [:db/add :v-eid :add2 :v-add2]
+               [:db/add :v-eid :entity/version 1]
+               [:db/add :v-eid :entity/type :type1])
             tx))
       ))
   )
@@ -108,7 +108,7 @@
                    :keep-same5 :v-keep-same5
                    :keep-nil6 nil}
           data {
-                :id :v-id
+                :eid :v-eid
                 :modify1 :v-modify1
                 :modify2 :v-modify2
                 :retract3 nil
@@ -119,12 +119,12 @@
           tx (entity-update-tx :db-part1 :type1 attributes db-data data 123)
           ]
       (is (=
-            '([:optimistic-lock :v-id 123]
-               [:db/add :v-id :entity/version 124]
-               [:db/add :v-id :modify1 :v-modify1]
-               [:db/add :v-id :modify2 :v-modify2]
-               [:db/retract :v-id :retract3 :db-retract3]
-               [:db/add :v-id :add4 :v-add4]
+            '([:optimistic-lock :v-eid 123]
+               [:db/add :v-eid :entity/version 124]
+               [:db/add :v-eid :modify1 :v-modify1]
+               [:db/add :v-eid :modify2 :v-modify2]
+               [:db/retract :v-eid :retract3 :db-retract3]
+               [:db/add :v-eid :add4 :v-add4]
                )
             tx))
       ))
@@ -133,7 +133,7 @@
     (let [attributes [:a]
           db-data {:a :db-a
                    :entity/version :db-version}
-          data {:id :v-id
+          data {:eid :v-eid
                 :a :v-a}
           ]
       (try+ (do

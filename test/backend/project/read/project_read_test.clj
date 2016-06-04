@@ -20,13 +20,7 @@
         db (:db-after @(d/transact (d/connect db-uri) setup))]
     (testing
       "Full"
-      (let [id (-> (d/q '[:find ?e
-                          :in $ ?code
-                          :where [?e :project/code ?code]]
-                        db
-                        "code-1")
-                 ffirst)
-            request (create-request id)
+      (let [request (create-request "code-1")
             response (handler request)
             response-body (read-json "backend/project/read/full-response")
             ]

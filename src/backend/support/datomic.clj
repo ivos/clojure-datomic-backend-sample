@@ -31,13 +31,18 @@
   (or (= :nil query-param)
       (= db-value query-param)))
 
+(defn maybe-eid
+  [db type attribute value]
+  (let [query [':find '?e
+               ':in '$ '?type '?v
+               ':where '[?e :entity/type ?type] ['?e attribute '?v]
+               ]]
+    (-> (d/q query db type value)
+      ffirst)))
+
 (defn get-eid
-  [db id type]
-  (let [query '[:find ?e
-                :in $ ?e ?type
-                :where [?e :entity/type ?type]]
-        eid (-> (d/q query db id type)
-              ffirst)]
+  [db type attribute value]
+  (let [eid (maybe-eid db type attribute value)]
     (if (nil? eid)
       (throw+ {:type :custom-response
                :response {:status (status-code :not-found)
@@ -45,5 +50,5 @@
       eid)))
 
 (defn get-entity
-  [db id]
-  (merge {:id id} (d/touch (d/entity db id))))
+  [db eid]
+  (merge {:eid eid} (d/touch (d/entity db eid))))

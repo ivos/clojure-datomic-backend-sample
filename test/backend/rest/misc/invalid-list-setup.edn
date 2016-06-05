@@ -1,0 +1,9 @@
+[
+ {:db/id #db/id[:db.part/backend -1]
+  :entity/type :entity.type/project
+  :project/code "some-code-key-aaa"
+  :project/name "Some name-key aaa"
+  :project/visibility :project.visibility/private
+  :entity/version 1
+  }
+ ]

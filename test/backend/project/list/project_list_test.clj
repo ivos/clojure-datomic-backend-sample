@@ -50,23 +50,4 @@
             ]
         (is-response-ok response response-body)
         ))
-    (testing
-      "Invalid enum value"
-      (let [params {:visibility "invalid"}
-            request (create-request params)
-            response (handler request)
-            ]
-        (is-response-ok response "[]")
-        ))
-    (testing
-      "Invalid attribute"
-      (let [params {:invalidAttribute "some-value"}
-            request (create-request params)
-            response (handler request)
-            response-body (read-json "backend/project/list/invalid-attribute-response")
-            ]
-        (is (= (:status response) 422))
-        (is-response-json response)
-        (is (= (:body response) response-body))
-        ))
     ))

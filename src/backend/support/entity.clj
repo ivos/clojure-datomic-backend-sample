@@ -4,6 +4,12 @@
             [slingshot.slingshot :refer [throw+]]
             ))
 
+(defn filter-password
+  [data]
+  (if (:password data)
+    (assoc data :password "*****")
+    data))
+
 (defn empty-strings-to-nils
   "Convert empty string values to nils."
   [data]
@@ -64,7 +70,7 @@
         extended-attrs (conj attributes :entity/version :entity/type)
         add-txs (map (partial attribute-tx nil data-preset) extended-attrs)
         tx (filter identity add-txs)]
-    (log/trace "Create tx" tx)
+    (log/debug "Create tx" tx)
     tx))
 
 (defn entity-update-tx

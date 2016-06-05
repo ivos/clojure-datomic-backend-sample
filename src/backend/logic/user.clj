@@ -1,4 +1,4 @@
-(ns backend.logic.project
+(ns backend.logic.user
   (:require [clojure.string :as string]
             [clojure.tools.logging :as log]
             [datomic.api :as d]
@@ -11,16 +11,14 @@
             ))
 
 (def ^:private db-partition :db.part/backend)
-(def ^:private attributes [:project/code :project/name :project/visibility])
-(def ^:private visibilities #{:project.visibility/public :project.visibility/private})
+(def ^:private attributes [:user/username :user/email :user/full-name :user/password-hash])
 
 (defn- get-request-data
   [request eid]
   (let [data (-> (:body request)
                (ns-keys attributes)
-               (ns-value :project/visibility :project.visibility)
                (assoc :eid eid))]
-    (log/debug "Request data" data)
+    (log/debug "Request data" (filter-password data))
     data))
 
 (defn- get-request-query
@@ -28,7 +26,6 @@
   (let [query (-> (:params request)
                 empty-strings-to-nils
                 (ns-keys attributes)
-                (ns-value :project/visibility :project.visibility)
                 (prepare-query-params attributes db))]
     (log/debug "Request query" query)
     query))
@@ -37,31 +34,54 @@
   [data]
   (verify-keys! (conj attributes :eid) data)
   (validate! data
-             :project/code v/required
-             :project/name v/required
-             :project/visibility [[v/required] [v/member visibilities]]
+             :user/username v/required
+             :user/email v/required
+             :user/password-hash v/required
              ))
 
 (defn- get-result
   [data]
   (-> data
-    (dissoc :eid :entity/version :entity/type)
-    (strip-value-ns :project/visibility)
+    (dissoc :eid :entity/version :entity/type :user/password-hash)
     strip-keys-ns))
 
 (defn- get-detail-uri
   [request data]
-  (str (get-in request [:config :app :deploy-url]) "projects/" (:project/code data)))
+  (str (get-in request [:config :app :deploy-url]) "users/" (:user/username data)))
+
+(defn- hash-password
+  [password]
+  (let [bytes (.getBytes ^String password)
+        digest (-> (java.security.MessageDigest/getInstance "SHA-256")
+                 (.digest bytes))
+        hash (org.apache.commons.codec.binary.Hex/encodeHexString digest)]
+    hash))
+
+(defn- hash-password-data
+  [data]
+  (-> data
+    (assoc :user/password-hash (hash-password (:password data)))
+    (dissoc :password)))
 
 ; public functions
 
-(defn project-create
+(defn user-create
   [request]
   (let [conn (:connection request)
         tempid (d/tempid db-partition -1)
         data (get-request-data request tempid)
-        _ (validate-common! data)
-        tx (entity-create-tx db-partition :entity.type/project attributes data)
+        _ (verify-keys! (-> attributes
+                          set
+                          (disj :user/password-hash)
+                          (conj :eid :password))
+                        data)
+        _ (validate! data
+                     :user/username v/required
+                     :user/email v/required
+                     :password v/required
+                     )
+        data (hash-password-data data)
+        tx (entity-create-tx db-partition :entity.type/user attributes data)
         tx-result @(d/transact conn tx)
         _ (log/trace "Tx result" tx-result)
         db-after (:db-after tx-result)
@@ -73,7 +93,7 @@
                    (header-etag saved))]
     response))
 
-(defn project-list
+(defn user-list
   [request]
   (let [conn (:connection request)
         db (d/db conn)
@@ -81,18 +101,18 @@
         _ (log/debug "Listing" query)
         _ (verify-keys! attributes query)
         eids (d/q '[:find ?e
-                    :in $ ?type ?code-param ?name-param ?visibility-param
+                    :in $ ?type ?username-param ?email-param ?full-name-param
                     :where [?e :entity/type ?type]
-                    [?e :project/code ?code] [(backend.support.datomic/query-string ?code ?code-param)]
-                    [?e :project/name ?name] [(backend.support.datomic/query-string ?name ?name-param)]
-                    [?e :project/visibility ?visibility] [(backend.support.datomic/query-keyword ?visibility ?visibility-param)]
+                    [?e :user/username ?username] [(backend.support.datomic/query-string ?username ?username-param)]
+                    [?e :user/email ?email] [(backend.support.datomic/query-string ?email ?email-param)]
+                    [?e :user/full-name ?full-name] [(backend.support.datomic/query-string ?full-name ?full-name-param)]
                     ]
-                  db :entity.type/project
-                  (:project/code query) (:project/name query) (:project/visibility query))
+                  db :entity.type/user
+                  (:user/username query) (:user/email query) (:user/full-name query))
         data (map #(get-entity db (first %)) eids)
         sorted (sort-by (juxt
-                          (comp string/lower-case :project/name)
-                          (comp string/lower-case :project/code))
+                          (comp string/lower-case :user/full-name)
+                          (comp string/lower-case :user/username))
                         data)
         to-result #(-> %
                      (assoc :uri (get-detail-uri request %))
@@ -101,12 +121,12 @@
         ]
     (response result)))
 
-(defn project-read
+(defn user-read
   [request]
   (let [conn (:connection request)
         db (d/db conn)
         id (-> request :params :id)
-        eid (get-eid db :entity.type/project :project/code id)
+        eid (get-eid db :entity.type/user :user/username id)
         data (get-entity db eid)
         _ (log/debug "Read" data)
         result (get-result data)
@@ -114,19 +134,19 @@
                    (header-etag data))]
     response))
 
-(defn project-update
+(defn user-update
   [request]
   (let [conn (:connection request)
         db (d/db conn)
         id (-> request :params :id)
         version (get-if-match request)
-        eid (get-eid db :entity.type/project :project/code id)
+        eid (get-eid db :entity.type/user :user/username id)
         data (get-request-data request eid)
-        _ (log/debug "Updating" data)
+        _ (log/debug "Updating" (filter-password data))
         _ (validate-common! data)
         db-data (get-entity db eid)
         _ (log/debug "Read" db-data)
-        tx (entity-update-tx db-partition :entity.type/project attributes db-data data version)
+        tx (entity-update-tx db-partition :entity.type/user attributes db-data data version)
         tx-result @(d/transact conn tx)
         _ (log/trace "Tx result" tx-result)
         db-after (:db-after tx-result)
@@ -138,15 +158,15 @@
                    (header-etag saved))]
     response))
 
-(defn project-delete
+(defn user-delete
   [request]
   (let [conn (:connection request)
         db (d/db conn)
         id (-> request :params :id)
         version (get-if-match request)
-        eid (get-eid db :entity.type/project :project/code id)
+        eid (get-eid db :entity.type/user :user/username id)
         db-data (get-entity db eid)
-        _ (log/debug "Read" db-data)
+        _ (log/debug "Read" (filter-password db-data))
         tx (entity-delete-tx db-data eid version)
         tx-result @(d/transact conn tx)
         _ (log/trace "Tx result" tx-result)

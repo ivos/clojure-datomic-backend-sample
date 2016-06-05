@@ -1,4 +1,4 @@
-(ns backend.project.create.project-create-test
+(ns backend.user.create.user-create-test
   (:require [clojure.test :refer :all]
             [ring.mock.request :as mock]
             [datomic.api :as d]
@@ -11,34 +11,35 @@
 
 (defn- create-request
   [body]
-  (-> (mock/request :post "/projects" body)
+  (-> (mock/request :post "/users" body)
     (mock/content-type "application/json")))
 
-(deftest project-create-test
+(deftest user-create-test
   (let [db-uri (test-db-uri)
         config (test-config db-uri)
         handler (create-handler config)]
     (start-database! db-uri)
     (testing
       "Full"
-      (let [request-body (read-json "backend/project/create/full-request")
-            verify (read-edn "backend/project/create/full-verify")
+      (let [request-body (read-json "backend/user/create/full-request")
+            response-body (read-json "backend/user/create/full-response")
+            verify (read-edn "backend/user/create/full-verify")
             request (create-request request-body)
             response (handler request)
             location (get-in response [:headers "Location"])
             id (-> location (.split "/") last)
             db (-> db-uri d/connect d/db)
-            eid (get-eid db :entity.type/project :project/code id)
+            eid (get-eid db :entity.type/user :user/username id)
             created (get-entity db eid)
             ]
-        (is-response-created response request-body config)
+        (is-response-created response response-body config)
         (is (= verify (dissoc created :eid)))
-        (is (= id "code-1"))
+        (is (= id "username-1"))
         ))
     (testing
       "Empty"
       (let [request-body "{}"
-            response-body (read-json "backend/project/create/empty-response")
+            response-body (read-json "backend/user/create/empty-response")
             request (create-request request-body)
             response (handler request)
             ]

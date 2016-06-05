@@ -1,31 +1,31 @@
 [
 	{
-		"name": "Some name-key aaa",
 		"code": "some-code-key-aza",
+		"name": "Some name-key aaa",
 		"visibility": "private",
 		"uri": "http://localhost:3000/projects/some-code-key-aza"
 	},
 	{
-		"name": "Some name-key aba",
 		"code": "some-code-key-aya",
+		"name": "Some name-key aba",
 		"visibility": "private",
 		"uri": "http://localhost:3000/projects/some-code-key-aya"
 	},
 	{
-		"name": "Some name-key aca",
 		"code": "some-code-key-ama",
+		"name": "Some name-key aca",
 		"visibility": "private",
 		"uri": "http://localhost:3000/projects/some-code-key-ama"
 	},
 	{
-		"name": "Some name-key aca",
 		"code": "some-code-key-ana",
+		"name": "Some name-key aca",
 		"visibility": "private",
 		"uri": "http://localhost:3000/projects/some-code-key-ana"
 	},
 	{
-		"name": "Some NAME-KEY ada",
 		"code": "some-CODE-KEY-aaa",
+		"name": "Some NAME-KEY ada",
 		"visibility": "private",
 		"uri": "http://localhost:3000/projects/some-CODE-KEY-aaa"
 	}

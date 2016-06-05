@@ -9,9 +9,20 @@
             [ring.middleware.keyword-params :refer :all]
             [datomic.api :as d]
             [slingshot.slingshot :refer [try+]]
+            [backend.support.entity :refer [filter-password]]
             [backend.support.validation :refer [wrap-validation]]
             [backend.logic.project :refer :all]
+            [backend.logic.user :refer :all]
             ))
+
+(defroutes ^:private user-routes
+  (context "/users" []
+           (POST "/" request (user-create request))
+;           (GET "/" request (user-list request))
+;           (GET "/:id" request (user-read request))
+;           (PUT "/:id" request (user-update request))
+;           (DELETE "/:id" request (user-delete request))
+           ))
 
 (defroutes ^:private project-routes
   (context "/projects" []
@@ -24,6 +35,7 @@
 
 (defroutes app-handler
   (GET "/" [] "<h1>Hello compojure</h1>")
+  user-routes
   project-routes
   (route/not-found (fn [_] (not-found {:code :entity.not.found}))))
 
@@ -69,7 +81,7 @@
              (-> request :request-method name clojure.string/upper-case)
              (:uri request)])
           body (when-not (#{:get :head :delete} (:request-method request))
-                 (:body request))]
+                 (filter-password (:body request)))]
       (log/info ">>> Request"
                 request-info
                 "Params:" (:params request)

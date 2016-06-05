@@ -12,6 +12,7 @@
                  [compojure "1.5.0"]
                  [bouncer "1.0.0"]
                  [slingshot "0.12.2"]
+                 [commons-codec/commons-codec "1.10"]
                  [org.clojure/tools.logging "0.3.1"]
                  [ch.qos.logback/logback-classic "1.1.7"]
                  [ring/ring-mock "0.3.0"]
@@ -19,6 +20,8 @@
   :main ^:skip-aot backend.app
   :target-path "target/%s"
   :profiles {:uberjar {:aot :all}}
-  :plugins [[lein-ring "0.9.7"]]
+  :plugins [[lein-ring "0.9.7"]
+            [lein-uberwar "0.2.0"]]
   :ring {:handler backend.app/repl-handler}
+  :uberwar {:handler backend.app/repl-handler}
   )

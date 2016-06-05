@@ -1,7 +1,7 @@
 {
  :entity/type :entity.type/project,
  :entity/version 1,
- :project/name "Name 1",
  :project/code "code-1",
+ :project/name "Name 1",
  :project/visibility :project.visibility/private
  }

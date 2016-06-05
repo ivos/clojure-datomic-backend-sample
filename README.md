@@ -25,8 +25,8 @@ Sample of a REST backend on Datomic written in Clojure.
 4. Invoke application:
 
 		curl -i -X POST -H "Content-Type: application/json" -d '{
-		    "name" : "Name 1",
 		    "code" : "code-1",
+		    "name" : "Name 1",
 		    "visibility" : "private"
 		}' "http://localhost:3000/projects"
 

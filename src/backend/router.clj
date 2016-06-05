@@ -18,7 +18,7 @@
 (defroutes ^:private user-routes
   (context "/users" []
            (POST "/" request (user-create request))
-;           (GET "/" request (user-list request))
+           (GET "/" request (user-list request))
 ;           (GET "/:id" request (user-read request))
 ;           (PUT "/:id" request (user-update request))
 ;           (DELETE "/:id" request (user-delete request))

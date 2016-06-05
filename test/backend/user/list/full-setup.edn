@@ -1,0 +1,68 @@
+[
+ {:db/id #db/id[:db.part/backend -1]
+  :entity/type :entity.type/user
+  :user/username "some-USERNAME-KEY-aaa"
+  :user/email "email-01-EMAIL-KEY@site.com"
+  :user/full-name "Some NAME-KEY ada"
+  :entity/version 1
+  }
+ {:db/id #db/id[:db.part/backend -2]
+  :entity/type :entity.type/user
+  :user/username "some-username-key-ana"
+  :user/email "email-02-email-key@site.com"
+  :user/full-name "Some name-key aca"
+  :entity/version 1
+  }
+ {:db/id #db/id[:db.part/backend -3]
+  :entity/type :entity.type/user
+  :user/username "some-username-key-ama"
+  :user/email "email-03-email-key@site.com"
+  :user/full-name "Some name-key aca"
+  :entity/version 1
+  }
+ {:db/id #db/id[:db.part/backend -4]
+  :entity/type :entity.type/user
+  :user/username "some-username-key-aya"
+  :user/email "email-04-email-key@site.com"
+  :user/full-name "Some name-key aba"
+  :entity/version 1
+  }
+ {:db/id #db/id[:db.part/backend -5]
+  :entity/type :entity.type/user
+  :user/username "some-username-key-aza"
+  :user/email "email-05-email-key@site.com"
+  :user/full-name "Some name-key aaa"
+  :entity/version 1
+  }
+ ; minimal
+ {:db/id #db/id[:db.part/backend -6]
+  :entity/type :entity.type/user
+  :user/username "some-username-key-aza"
+  :user/email "email-06-email-key@site.com"
+  :entity/version 1
+  }
+ ; username not match
+ {:db/id #db/id[:db.part/backend -7]
+  :entity/type :entity.type/user
+  :user/username "some-username-kez-aaa"
+  :user/email "email-07-email-key@site.com"
+  :user/full-name "Some name-key aaa"
+  :entity/version 1
+  }
+ ; email not match
+ {:db/id #db/id[:db.part/backend -8]
+  :entity/type :entity.type/user
+  :user/username "some-username-key-aaa"
+  :user/email "email-08-email-kez@site.com"
+  :user/full-name "Some name-key aaa"
+  :entity/version 1
+  }
+ ; full-name not match
+ {:db/id #db/id[:db.part/backend -9]
+  :entity/type :entity.type/user
+  :user/username "some-username-key-aaa"
+  :user/email "email-09-email-key@site.com"
+  :user/full-name "Some name-kez aaa"
+  :entity/version 1
+  }
+ ]

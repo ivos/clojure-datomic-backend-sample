@@ -11,7 +11,8 @@
             ))
 
 (def ^:private db-partition :db.part/backend)
-(def ^:private attributes [:user/username :user/email :user/full-name :user/password-hash])
+(def ^:private core-attributes [:user/username :user/email :user/full-name])
+(def ^:private attributes (conj core-attributes :user/password-hash))
 
 (defn- get-request-data
   [request eid]
@@ -26,7 +27,7 @@
   (let [query (-> (:params request)
                 empty-strings-to-nils
                 (ns-keys attributes)
-                (prepare-query-params attributes db))]
+                (prepare-query-params core-attributes db))]
     (log/debug "Request query" query)
     query))
 
@@ -70,11 +71,7 @@
   (let [conn (:connection request)
         tempid (d/tempid db-partition -1)
         data (get-request-data request tempid)
-        _ (verify-keys! (-> attributes
-                          set
-                          (disj :user/password-hash)
-                          (conj :eid :password))
-                        data)
+        _ (verify-keys! (conj core-attributes :eid :password) data)
         _ (validate! data
                      :user/username v/required
                      :user/email v/required

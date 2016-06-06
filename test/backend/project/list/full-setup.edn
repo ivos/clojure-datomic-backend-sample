@@ -1,61 +1,61 @@
 [
  {:db/id #db/id[:db.part/backend -1]
   :entity/type :entity.type/project
+  :entity/version 1
   :project/code "some-CODE-KEY-aaa"
   :project/name "Some NAME-KEY ada"
   :project/visibility :project.visibility/private
-  :entity/version 1
   }
  {:db/id #db/id[:db.part/backend -2]
   :entity/type :entity.type/project
+  :entity/version 1
   :project/code "some-code-key-ana"
   :project/name "Some name-key aca"
   :project/visibility :project.visibility/private
-  :entity/version 1
   }
  {:db/id #db/id[:db.part/backend -3]
   :entity/type :entity.type/project
+  :entity/version 1
   :project/code "some-code-key-ama"
   :project/name "Some name-key aca"
   :project/visibility :project.visibility/private
-  :entity/version 1
   }
  {:db/id #db/id[:db.part/backend -4]
   :entity/type :entity.type/project
+  :entity/version 1
   :project/code "some-code-key-aya"
   :project/name "Some name-key aba"
   :project/visibility :project.visibility/private
-  :entity/version 1
   }
  {:db/id #db/id[:db.part/backend -5]
   :entity/type :entity.type/project
+  :entity/version 1
   :project/code "some-code-key-aza"
   :project/name "Some name-key aaa"
   :project/visibility :project.visibility/private
-  :entity/version 1
   }
  ; name not match
  {:db/id #db/id[:db.part/backend -6]
   :entity/type :entity.type/project
+  :entity/version 1
   :project/code "some-code-key-aaa"
   :project/name "Some name-kez aaa"
   :project/visibility :project.visibility/private
-  :entity/version 1
   }
  ; code not match
  {:db/id #db/id[:db.part/backend -7]
   :entity/type :entity.type/project
+  :entity/version 1
   :project/code "some-code-kez-aaa"
   :project/name "Some name-key aaa"
   :project/visibility :project.visibility/private
-  :entity/version 1
   }
  ; visibility not match
  {:db/id #db/id[:db.part/backend -8]
   :entity/type :entity.type/project
+  :entity/version 1
   :project/code "some-code-key-aaa"
   :project/name "Some name-key aaa"
   :project/visibility :project.visibility/public
-  :entity/version 1
   }
  ]

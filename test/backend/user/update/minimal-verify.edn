@@ -2,4 +2,5 @@
  :entity/version 124
  :user/username "username-minimal-a"
  :user/email "email-minimal-a@site.com"
+ :user/password-hash "0000000000000000000000000000000000000000000000000000000000000000"
  }

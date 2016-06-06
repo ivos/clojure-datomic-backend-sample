@@ -1,9 +1,9 @@
 [
  {:db/id #db/id[:db.part/backend -1]
   :entity/type :entity.type/user
+  :entity/version 123
   :user/username "username-1"
   :user/email "email-1@site.com"
   :user/fullName "Full Name 1"
-  :entity/version 123
   }
  ]

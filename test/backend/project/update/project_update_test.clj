@@ -22,7 +22,7 @@
         config (test-config db-uri)
         handler (create-handler config)
         _ (start-database! db-uri)
-        setup (read-edn "backend/project/update/full-setup")
+        setup (read-edn "backend/project/update/setup")
         db (:db-after @(d/transact (d/connect db-uri) setup))
         eid (get-eid db :entity.type/project :project/code "code-full")
         ]

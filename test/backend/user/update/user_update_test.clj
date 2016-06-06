@@ -29,6 +29,7 @@
       "Full"
       (let [eid (get-eid db :entity.type/user :user/username "username-full")
             request-body (read-json "backend/user/update/full-request")
+            response-body (read-json "backend/user/update/full-response")
             verify (read-edn "backend/user/update/full-verify")
             request (create-request "username-full" 123 request-body)
             response (handler request)
@@ -37,7 +38,7 @@
             db-after (-> db-uri d/connect d/db)
             updated (get-entity db-after eid)
             ]
-        (is-response-ok-version response request-body 124)
+        (is-response-ok-version response response-body 124)
         (is (= verify (dissoc updated :eid)))
         (is (= id "username-full-a"))
         ))

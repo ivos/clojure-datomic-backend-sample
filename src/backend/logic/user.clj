@@ -52,9 +52,11 @@
 
 (defn- hash-password-data
   [data]
-  (-> data
-    (assoc :user/password-hash (hash-password (:password data)))
-    (dissoc :password)))
+  (if-let [password (:password data)]
+    (-> data
+      (assoc :user/password-hash (hash-password password))
+      (dissoc :password))
+    data))
 
 ; public functions
 
@@ -137,9 +139,11 @@
                      :user/username v/required
                      :user/email v/required
                      )
+        data (hash-password-data data)
         db-data (get-entity db eid)
         _ (log/debug "Read" db-data)
-        tx (entity-update-tx db-partition :entity.type/user attributes db-data data version)
+        tx-attributes (if (:user/password-hash data) attributes core-attributes)
+        tx (entity-update-tx db-partition :entity.type/user tx-attributes db-data data version)
         tx-result @(d/transact conn tx)
         _ (log/trace "Tx result" tx-result)
         db-after (:db-after tx-result)

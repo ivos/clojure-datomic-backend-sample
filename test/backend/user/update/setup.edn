@@ -1,22 +1,25 @@
 [
  {:db/id #db/id[:db.part/backend -1]
   :entity/type :entity.type/user
+  :entity/version 123
   :user/username "username-full"
   :user/email "email-full@site.com"
-  :entity/version 123
+  :user/password-hash "0000000000000000000000000000000000000000000000000000000000000000"
   }
  {:db/id #db/id[:db.part/backend -2]
   :entity/type :entity.type/user
+  :entity/version 123
   :user/username "username-minimal"
   :user/email "email-minimal@site.com"
   :user/fullName "Full Name minimal"
-  :entity/version 123
+  :user/password-hash "0000000000000000000000000000000000000000000000000000000000000000"
   }
  {:db/id #db/id[:db.part/backend -3]
   :entity/type :entity.type/user
+  :entity/version 123
   :user/username "username-optimistic"
   :user/email "email-optimistic@site.com"
   :user/fullName "Full Name optimistic"
-  :entity/version 123
+  :user/password-hash "0000000000000000000000000000000000000000000000000000000000000000"
   }
  ]

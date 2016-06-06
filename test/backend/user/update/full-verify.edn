@@ -1,0 +1,6 @@
+{:entity/type :entity.type/user
+ :entity/version 124
+ :user/username "username-full-a"
+ :user/email "email-full-a@site.com"
+ :user/fullName "Full Name a"
+ }

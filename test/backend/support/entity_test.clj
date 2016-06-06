@@ -39,6 +39,27 @@
              ))))
   )
 
+(deftest ensure-all-attributes-test
+  (testing
+    (let [data {:with-value "abc"
+                :nil-value1 nil
+                :false-bool false
+                :number-non-zero 123
+                :other "other-value"
+                :keyword :keyword-value}
+          attributes [:with-value :nil-value1 :number-non-zero :missing1 :missing2 :keyword]]
+      (is (= (ensure-all-attributes data attributes)
+             {:with-value "abc"
+              :nil-value1 nil
+              :false-bool false
+              :number-non-zero 123
+              :other "other-value"
+              :keyword :keyword-value
+              :missing1 nil
+              :missing2 nil}
+             ))))
+  )
+
 (deftest ns-value-test
   (testing
     "Ok."

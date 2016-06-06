@@ -22,7 +22,7 @@
       "Full query"
       (let [params {:username "uSeRnAmE-kEy"
                     :email "eMaIl-KeY"
-                    :full-name "nAmE-kEy"}
+                    :fullName "nAmE-kEy"}
             request (create-request params)
             response (handler request)
             response-body (read-json "backend/user/list/full-query-response")
@@ -33,7 +33,7 @@
       "Empty query"
       (let [params {:username ""
                     :email ""
-                    :full-name ""}
+                    :fullName ""}
             request (create-request params)
             response (handler request)
             response-body (read-json "backend/user/list/no-query-response")

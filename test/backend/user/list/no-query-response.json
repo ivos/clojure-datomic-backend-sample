@@ -2,49 +2,49 @@
 	{
 		"username": "some-username-key-aaa",
 		"email": "email-08-email-kez@site.com",
-		"full-name": "Some name-key aaa",
+		"fullName": "Some name-key aaa",
 		"uri": "http://localhost:3000/users/some-username-key-aaa"
 	},
 	{
 		"username": "some-username-key-aza",
 		"email": "email-05-email-key@site.com",
-		"full-name": "Some name-key aaa",
+		"fullName": "Some name-key aaa",
 		"uri": "http://localhost:3000/users/some-username-key-aza"
 	},
 	{
 		"username": "some-username-kez-aaa",
 		"email": "email-07-email-key@site.com",
-		"full-name": "Some name-key aaa",
+		"fullName": "Some name-key aaa",
 		"uri": "http://localhost:3000/users/some-username-kez-aaa"
 	},
 	{
 		"username": "some-username-key-aya",
 		"email": "email-04-email-key@site.com",
-		"full-name": "Some name-key aba",
+		"fullName": "Some name-key aba",
 		"uri": "http://localhost:3000/users/some-username-key-aya"
 	},
 	{
 		"username": "some-username-key-ama",
 		"email": "email-03-email-key@site.com",
-		"full-name": "Some name-key aca",
+		"fullName": "Some name-key aca",
 		"uri": "http://localhost:3000/users/some-username-key-ama"
 	},
 	{
 		"username": "some-username-key-ana",
 		"email": "email-02-email-key@site.com",
-		"full-name": "Some name-key aca",
+		"fullName": "Some name-key aca",
 		"uri": "http://localhost:3000/users/some-username-key-ana"
 	},
 	{
 		"username": "some-USERNAME-KEY-aaa",
 		"email": "email-01-EMAIL-KEY@site.com",
-		"full-name": "Some NAME-KEY ada",
+		"fullName": "Some NAME-KEY ada",
 		"uri": "http://localhost:3000/users/some-USERNAME-KEY-aaa"
 	},
 	{
 		"username": "some-username-key-aaa",
 		"email": "email-09-email-key@site.com",
-		"full-name": "Some name-kez aaa",
+		"fullName": "Some name-kez aaa",
 		"uri": "http://localhost:3000/users/some-username-key-aaa"
 	}
 ]

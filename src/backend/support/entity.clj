@@ -1,5 +1,6 @@
 (ns backend.support.entity
-  (:require [clojure.tools.logging :as log]
+  (:require [clojure.set :as set]
+            [clojure.tools.logging :as log]
             [datomic.api :as d]
             [slingshot.slingshot :refer [throw+]]
             ))
@@ -21,6 +22,12 @@
   "Remove mappings with nil values."
   [data]
   (into {} (remove (comp nil? val) data)))
+
+(defn ensure-all-attributes
+  [data attributes]
+  (let [missing-keys (set/difference (set attributes) (set (keys data)))
+        missing-map (apply hash-map (mapcat #(vector % nil) missing-keys))]
+    (merge data missing-map)))
 
 (defn ns-value
   [data attribute ns]

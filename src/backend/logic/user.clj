@@ -11,7 +11,7 @@
             ))
 
 (def ^:private db-partition :db.part/backend)
-(def ^:private core-attributes [:user/username :user/email :user/full-name])
+(def ^:private core-attributes [:user/username :user/email :user/fullName])
 (def ^:private attributes (conj core-attributes :user/password-hash))
 
 (defn- get-request-data
@@ -31,19 +31,11 @@
     (log/debug "Request query" query)
     query))
 
-(defn- validate-common!
-  [data]
-  (verify-keys! (conj attributes :eid) data)
-  (validate! data
-             :user/username v/required
-             :user/email v/required
-             :user/password-hash v/required
-             ))
-
 (defn- get-result
   [data]
   (-> data
     (dissoc :eid :entity/version :entity/type :user/password-hash)
+    (ensure-all-attributes core-attributes)
     strip-keys-ns))
 
 (defn- get-detail-uri
@@ -98,17 +90,17 @@
         _ (log/debug "Listing" query)
         _ (verify-keys! attributes query)
         eids (d/q '[:find ?e
-                    :in $ ?type ?username-param ?email-param ?full-name-param
+                    :in $ ?type ?username-param ?email-param ?fullName-param
                     :where [?e :entity/type ?type]
                     [?e :user/username ?username] [(backend.support.datomic/query-string ?username ?username-param)]
                     [?e :user/email ?email] [(backend.support.datomic/query-string ?email ?email-param)]
-                    [?e :user/full-name ?full-name] [(backend.support.datomic/query-string ?full-name ?full-name-param)]
+                    [?e :user/fullName ?fullName] [(backend.support.datomic/query-string ?fullName ?fullName-param)]
                     ]
                   db :entity.type/user
-                  (:user/username query) (:user/email query) (:user/full-name query))
+                  (:user/username query) (:user/email query) (:user/fullName query))
         data (map #(get-entity db (first %)) eids)
         sorted (sort-by (juxt
-                          (comp string/lower-case :user/full-name)
+                          (comp string/lower-case :user/fullName)
                           (comp string/lower-case :user/username))
                         data)
         to-result #(-> %
@@ -140,7 +132,11 @@
         eid (get-eid db :entity.type/user :user/username id)
         data (get-request-data request eid)
         _ (log/debug "Updating" (filter-password data))
-        _ (validate-common! data)
+        _ (verify-keys! (conj core-attributes :eid :password) data)
+        _ (validate! data
+                     :user/username v/required
+                     :user/email v/required
+                     )
         db-data (get-entity db eid)
         _ (log/debug "Read" db-data)
         tx (entity-update-tx db-partition :entity.type/user attributes db-data data version)

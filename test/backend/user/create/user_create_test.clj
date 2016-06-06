@@ -34,7 +34,24 @@
             ]
         (is-response-created response response-body config)
         (is (= verify (dissoc created :eid)))
-        (is (= id "username-1"))
+        (is (= id "username-full"))
+        ))
+    (testing
+      "Minimal"
+      (let [request-body (read-json "backend/user/create/minimal-request")
+            response-body (read-json "backend/user/create/minimal-response")
+            verify (read-edn "backend/user/create/minimal-verify")
+            request (create-request request-body)
+            response (handler request)
+            location (get-in response [:headers "Location"])
+            id (-> location (.split "/") last)
+            db (-> db-uri d/connect d/db)
+            eid (get-eid db :entity.type/user :user/username id)
+            created (get-entity db eid)
+            ]
+        (is-response-created response response-body config)
+        (is (= verify (dissoc created :eid)))
+        (is (= id "username-minimal"))
         ))
     (testing
       "Empty"

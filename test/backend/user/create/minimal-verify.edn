@@ -1,8 +1,7 @@
 {
  :entity/type :entity.type/user,
  :entity/version 1,
- :user/username "username-full",
- :user/email "email-full@site.com",
- :user/fullName "Full Name full",
+ :user/username "username-minimal",
+ :user/email "email-minimal@site.com",
  :user/password-hash "96ca1a27ea5cb7cecc413e3207dd285dda936355e06d4066caa855fa6c26eead"
  }

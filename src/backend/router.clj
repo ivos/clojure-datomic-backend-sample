@@ -21,7 +21,7 @@
            (GET "/" request (user-list request))
            (GET "/:id" request (user-read request))
            (PUT "/:id" request (user-update request))
-;           (DELETE "/:id" request (user-delete request))
+           (DELETE "/:id" request (user-delete request))
            ))
 
 (defroutes ^:private project-routes

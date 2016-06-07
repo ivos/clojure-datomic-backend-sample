@@ -1,0 +1,17 @@
+[
+ {:db/id #db/id[:db.part/backend -1]
+  :entity/type :entity.type/user
+  :entity/version 123
+  :user/username "username-full"
+  :user/email "email-full@site.com"
+  :user/fullName "Full Name full"
+  :user/password-hash "0000000000000000000000000000000000000000000000000000000000000000"
+  }
+ {:db/id #db/id[:db.part/backend -2]
+  :entity/type :entity.type/user
+  :entity/version 123
+  :user/username "username-minimal"
+  :user/email "email-minimal@site.com"
+  :user/password-hash "0000000000000000000000000000000000000000000000000000000000000000"
+  }
+ ]

@@ -16,7 +16,7 @@
         config (test-config db-uri)
         handler (create-handler config)
         _ (start-database! db-uri)
-        setup (read-edn "backend/user/list/full-setup")
+        setup (read-edn "backend/user/list/setup")
         db (:db-after @(d/transact (d/connect db-uri) setup))]
     (testing
       "Full query"

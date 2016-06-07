@@ -16,13 +16,21 @@
         config (test-config db-uri)
         handler (create-handler config)
         _ (start-database! db-uri)
-        setup (read-edn "backend/user/read/full-setup")
+        setup (read-edn "backend/user/read/setup")
         db (:db-after @(d/transact (d/connect db-uri) setup))]
     (testing
       "Full"
-      (let [request (create-request "username-1")
+      (let [request (create-request "username-full")
             response (handler request)
             response-body (read-json "backend/user/read/full-response")
+            ]
+        (is-response-ok-version response response-body 123)
+        ))
+    (testing
+      "Minimal"
+      (let [request (create-request "username-minimal")
+            response (handler request)
+            response-body (read-json "backend/user/read/minimal-response")
             ]
         (is-response-ok-version response response-body 123)
         ))

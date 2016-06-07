@@ -12,7 +12,7 @@
 
 (def ^:private db-partition :db.part/backend)
 (def ^:private core-attributes [:user/username :user/email :user/fullName])
-(def ^:private attributes (conj core-attributes :user/password-hash))
+(def ^:private attributes (conj core-attributes :user/passwordHash))
 
 (defn- get-request-data
   [request eid]
@@ -34,7 +34,7 @@
 (defn- get-result
   [data]
   (-> data
-    (dissoc :eid :entity/version :entity/type :user/password-hash)
+    (dissoc :eid :entity/version :entity/type :user/passwordHash)
     (ensure-all-attributes core-attributes)
     strip-keys-ns))
 
@@ -54,7 +54,7 @@
   [data]
   (if-let [password (:password data)]
     (-> data
-      (assoc :user/password-hash (hash-password password))
+      (assoc :user/passwordHash (hash-password password))
       (dissoc :password))
     data))
 
@@ -142,7 +142,7 @@
         data (hash-password-data data)
         db-data (get-entity db eid)
         _ (log/debug "Read" db-data)
-        tx-attributes (if (:user/password-hash data) attributes core-attributes)
+        tx-attributes (if (:user/passwordHash data) attributes core-attributes)
         tx (entity-update-tx db-partition :entity.type/user tx-attributes db-data data version)
         tx-result @(d/transact conn tx)
         _ (log/trace "Tx result" tx-result)

@@ -3,5 +3,5 @@
  :entity/version 1,
  :user/username "username-minimal",
  :user/email "email-minimal@site.com",
- :user/password-hash "96ca1a27ea5cb7cecc413e3207dd285dda936355e06d4066caa855fa6c26eead"
+ :user/passwordHash "96ca1a27ea5cb7cecc413e3207dd285dda936355e06d4066caa855fa6c26eead"
  }

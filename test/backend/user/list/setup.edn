@@ -5,7 +5,7 @@
   :user/username "some-USERNAME-KEY-aaa"
   :user/email "email-01-EMAIL-KEY@site.com"
   :user/fullName "Some NAME-KEY ada"
-  :user/password-hash "0000000000000000000000000000000000000000000000000000000000000000"
+  :user/passwordHash "0000000000000000000000000000000000000000000000000000000000000000"
   }
  {:db/id #db/id[:db.part/backend -2]
   :entity/type :entity.type/user
@@ -13,7 +13,7 @@
   :user/username "some-username-key-ana"
   :user/email "email-02-email-key@site.com"
   :user/fullName "Some name-key aca"
-  :user/password-hash "0000000000000000000000000000000000000000000000000000000000000000"
+  :user/passwordHash "0000000000000000000000000000000000000000000000000000000000000000"
   }
  {:db/id #db/id[:db.part/backend -3]
   :entity/type :entity.type/user
@@ -21,7 +21,7 @@
   :user/username "some-username-key-ama"
   :user/email "email-03-email-key@site.com"
   :user/fullName "Some name-key aca"
-  :user/password-hash "0000000000000000000000000000000000000000000000000000000000000000"
+  :user/passwordHash "0000000000000000000000000000000000000000000000000000000000000000"
   }
  {:db/id #db/id[:db.part/backend -4]
   :entity/type :entity.type/user
@@ -29,7 +29,7 @@
   :user/username "some-username-key-aya"
   :user/email "email-04-email-key@site.com"
   :user/fullName "Some name-key aba"
-  :user/password-hash "0000000000000000000000000000000000000000000000000000000000000000"
+  :user/passwordHash "0000000000000000000000000000000000000000000000000000000000000000"
   }
  {:db/id #db/id[:db.part/backend -5]
   :entity/type :entity.type/user
@@ -37,7 +37,7 @@
   :user/username "some-username-key-aza"
   :user/email "email-05-email-key@site.com"
   :user/fullName "Some name-key aaa"
-  :user/password-hash "0000000000000000000000000000000000000000000000000000000000000000"
+  :user/passwordHash "0000000000000000000000000000000000000000000000000000000000000000"
   }
  ; minimal
  {:db/id #db/id[:db.part/backend -6]
@@ -45,7 +45,7 @@
   :entity/version 1
   :user/username "some-username-key-aza"
   :user/email "email-06-email-key@site.com"
-  :user/password-hash "0000000000000000000000000000000000000000000000000000000000000000"
+  :user/passwordHash "0000000000000000000000000000000000000000000000000000000000000000"
   }
  ; username not match
  {:db/id #db/id[:db.part/backend -7]
@@ -54,7 +54,7 @@
   :user/username "some-username-kez-aaa"
   :user/email "email-07-email-key@site.com"
   :user/fullName "Some name-key aaa"
-  :user/password-hash "0000000000000000000000000000000000000000000000000000000000000000"
+  :user/passwordHash "0000000000000000000000000000000000000000000000000000000000000000"
   }
  ; email not match
  {:db/id #db/id[:db.part/backend -8]
@@ -63,7 +63,7 @@
   :user/username "some-username-key-aaa"
   :user/email "email-08-email-kez@site.com"
   :user/fullName "Some name-key aaa"
-  :user/password-hash "0000000000000000000000000000000000000000000000000000000000000000"
+  :user/passwordHash "0000000000000000000000000000000000000000000000000000000000000000"
   }
  ; fullName not match
  {:db/id #db/id[:db.part/backend -9]
@@ -72,6 +72,6 @@
   :user/username "some-username-key-aaa"
   :user/email "email-09-email-key@site.com"
   :user/fullName "Some name-kez aaa"
-  :user/password-hash "0000000000000000000000000000000000000000000000000000000000000000"
+  :user/passwordHash "0000000000000000000000000000000000000000000000000000000000000000"
   }
  ]

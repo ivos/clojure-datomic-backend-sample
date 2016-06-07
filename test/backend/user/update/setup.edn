@@ -4,7 +4,7 @@
   :entity/version 123
   :user/username "username-full"
   :user/email "email-full@site.com"
-  :user/password-hash "0000000000000000000000000000000000000000000000000000000000000000"
+  :user/passwordHash "0000000000000000000000000000000000000000000000000000000000000000"
   }
  {:db/id #db/id[:db.part/backend -2]
   :entity/type :entity.type/user
@@ -12,7 +12,7 @@
   :user/username "username-minimal"
   :user/email "email-minimal@site.com"
   :user/fullName "Full Name minimal"
-  :user/password-hash "0000000000000000000000000000000000000000000000000000000000000000"
+  :user/passwordHash "0000000000000000000000000000000000000000000000000000000000000000"
   }
  {:db/id #db/id[:db.part/backend -3]
   :entity/type :entity.type/user
@@ -20,6 +20,6 @@
   :user/username "username-optimistic"
   :user/email "email-optimistic@site.com"
   :user/fullName "Full Name optimistic"
-  :user/password-hash "0000000000000000000000000000000000000000000000000000000000000000"
+  :user/passwordHash "0000000000000000000000000000000000000000000000000000000000000000"
   }
  ]

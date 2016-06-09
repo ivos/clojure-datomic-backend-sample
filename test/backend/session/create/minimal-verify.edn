@@ -1,0 +1,8 @@
+{:entity/type :entity.type/session,
+ :entity/version 1,
+ :session/token #uuid "5757d606-c0aa-4822-b531-00f479aaa4e9",
+ :session/created #inst "2015-10-11T12:34:56.000-00:00",
+ :session/timeToLive 30,
+ :session/expires #inst "2015-10-11T13:04:56.000-00:00",
+ :session/user {:user/username "username-minimal"}
+ }

@@ -1,0 +1,17 @@
+[
+ {:db/id #db/id[:db.part/backend -1]
+  :entity/type :entity.type/user
+  :entity/version 123
+  :user/username "username-full"
+  :user/email "email-full@site.com"
+  :user/fullName "Full Name full"
+  :user/passwordHash "96ca1a27ea5cb7cecc413e3207dd285dda936355e06d4066caa855fa6c26eead"
+  }
+ {:db/id #db/id[:db.part/backend -2]
+  :entity/type :entity.type/user
+  :entity/version 123
+  :user/username "username-minimal"
+  :user/email "email-minimal@site.com"
+  :user/passwordHash "96ca1a27ea5cb7cecc413e3207dd285dda936355e06d4066caa855fa6c26eead"
+  }
+ ]

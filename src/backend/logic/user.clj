@@ -31,7 +31,7 @@
     (log/debug "Request query" query)
     query))
 
-(defn- get-result
+(defn user-get-result
   [data]
   (-> data
     (dissoc :eid :entity/version :entity/type :user/passwordHash)
@@ -42,7 +42,7 @@
   [request data]
   (str (get-in request [:config :app :deploy-url]) "users/" (:user/username data)))
 
-(defn- hash-password
+(defn hash-password
   [password]
   (let [bytes (.getBytes ^String password)
         digest (-> (java.security.MessageDigest/getInstance "SHA-256")
@@ -58,7 +58,7 @@
       (dissoc :password))
     data))
 
-; public functions
+; action functions
 
 (defn user-create
   [request]
@@ -79,7 +79,7 @@
         eid (d/resolve-tempid db-after (:tempids tx-result) tempid)
         saved (get-entity db-after eid)
         _ (log/debug "Saved" saved)
-        result (get-result saved)
+        result (user-get-result saved)
         response (-> (created (get-detail-uri request saved) result)
                    (header-etag saved))]
     response))
@@ -107,7 +107,7 @@
                         data)
         to-result #(-> %
                      (assoc :uri (get-detail-uri request %))
-                     get-result)
+                     user-get-result)
         result (map to-result sorted)
         ]
     (response result)))
@@ -120,7 +120,7 @@
         eid (get-eid db :entity.type/user :user/username id)
         data (get-entity db eid)
         _ (log/debug "Read" data)
-        result (get-result data)
+        result (user-get-result data)
         response (-> (response result)
                    (header-etag data))]
     response))
@@ -149,7 +149,7 @@
         db-after (:db-after tx-result)
         saved (get-entity db-after eid)
         _ (log/debug "Saved" saved)
-        result (get-result saved)
+        result (user-get-result saved)
         response (-> (response result)
                    (header "Location" (get-detail-uri request saved))
                    (header-etag saved))]

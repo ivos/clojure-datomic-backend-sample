@@ -5,6 +5,18 @@
             [slingshot.slingshot :refer [throw+]]
             ))
 
+(def ascending compare)
+(def descending #(compare %2 %1))
+
+(defn compare-by [& key-cmp-pairs]
+  (fn [x y]
+    (loop [[k cmp & more] key-cmp-pairs]
+      {:pre [(keyword? k), (fn? cmp), (even? (count more))]}
+      (let [result (cmp (k x) (k y))]
+        (if (and (zero? result) more)
+          (recur more)
+          result)))))
+
 (defn filter-password
   [data]
   (if (:password data)
@@ -77,7 +89,7 @@
         extended-attrs (conj attributes :entity/version :entity/type)
         add-txs (map (partial attribute-tx nil data-preset) extended-attrs)
         tx (filter identity add-txs)]
-    (log/debug "Create tx" tx)
+    (log/trace "Create tx" tx)
     tx))
 
 (defn entity-update-tx

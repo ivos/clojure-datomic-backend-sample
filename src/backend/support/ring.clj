@@ -8,6 +8,7 @@
    :ok 200
    :created 201
    :no-content 204
+   :unauthorized 401
    :not-found 404
    :conflict 409
    :unprocessable-entity 422

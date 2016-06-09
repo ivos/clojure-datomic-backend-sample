@@ -53,7 +53,7 @@
   [request data]
   (str (get-in request [:config :app :deploy-url]) "projects/" (:project/code data)))
 
-; public functions
+; action functions
 
 (defn project-create
   [request]

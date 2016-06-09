@@ -1,0 +1,35 @@
+[
+ {:db/ident :entity.type/session
+  :db/id #db/id[:db.part/backend]}
+
+ {:db/ident :session/token
+  :db/valueType :db.type/uuid
+  :db/cardinality :db.cardinality/one
+  :db/unique :db.unique/identity
+  :db/id #db/id[:db.part/db] :db.install/_attribute :db.part/db}
+
+ {:db/ident :session/created
+  :db/valueType :db.type/instant
+  :db/cardinality :db.cardinality/one
+  :db/index true
+  :db/id #db/id[:db.part/db] :db.install/_attribute :db.part/db}
+
+ {:db/ident :session/timeToLive
+  :db/doc "Duration in minutes the session is considered live when no request is received"
+  :db/valueType :db.type/long
+  :db/cardinality :db.cardinality/one
+  :db/index true
+  :db/id #db/id[:db.part/db] :db.install/_attribute :db.part/db}
+
+ {:db/ident :session/expires
+  :db/valueType :db.type/instant
+  :db/cardinality :db.cardinality/one
+  :db/index true
+  :db/id #db/id[:db.part/db] :db.install/_attribute :db.part/db}
+
+ {:db/ident :session/user
+  :db/valueType :db.type/ref
+  :db/cardinality :db.cardinality/one
+  :db/index true
+  :db/id #db/id[:db.part/db] :db.install/_attribute :db.part/db}
+ ]

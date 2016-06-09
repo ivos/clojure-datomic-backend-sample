@@ -1,0 +1,11 @@
+{
+	"token": "5757d606-c0aa-4822-b531-00f479aaa4e9",
+	"created": "2015-10-11T12:34:56Z",
+	"timeToLive": 30,
+	"expires": "2015-10-11T13:04:56Z",
+	"user": {
+		"username": "username-minimal",
+		"email": "email-minimal@site.com",
+		"fullName": null
+	}
+}

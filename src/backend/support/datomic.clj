@@ -40,15 +40,25 @@
     (-> (d/q query db type value)
       ffirst)))
 
+(defn verify-eid
+  [eid]
+  (if (nil? eid)
+    (throw+ {:type :custom-response
+             :response {:status (status-code :not-found)
+                        :body {:code :entity.not.found}}})
+    eid))
+
 (defn get-eid
   [db type attribute value]
   (let [eid (maybe-eid db type attribute value)]
-    (if (nil? eid)
-      (throw+ {:type :custom-response
-               :response {:status (status-code :not-found)
-                          :body {:code :entity.not.found}}})
-      eid)))
+    (verify-eid eid)))
 
 (defn get-entity
   [db eid]
   (merge {:eid eid} (d/touch (d/entity db eid))))
+
+(defn expand-entity
+  [data db key]
+  (let [eid (get-in data [key :db/id])
+        entity (get-entity db eid)]
+    (assoc data key entity)))

@@ -2,9 +2,13 @@
   (:require [clojure.edn :as edn]
             [clojure.test :refer :all]
             [cheshire.core :as json]
+            [clj-time.core :as t]
+            [midje.sweet :refer [fact]]
             [backend.app :refer [config]]
             [backend.support.ring :refer :all]
             ))
+
+(def std-time (t/date-time 2015 10 11 12 34 56))
 
 (defn test-db-uri
   []
@@ -25,7 +29,8 @@
 
 (defn is-response-json
   [response]
-  (is (= (get-in response [:headers "Content-Type"]) "application/json; charset=utf-8")))
+  (fact "Response content type"
+        (get-in response [:headers "Content-Type"]) => "application/json; charset=utf-8"))
 
 (defn is-response-created
   [response expected-body config]

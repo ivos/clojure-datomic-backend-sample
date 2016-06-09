@@ -11,8 +11,9 @@
             [slingshot.slingshot :refer [try+]]
             [backend.support.entity :refer [filter-password]]
             [backend.support.validation :refer [wrap-validation]]
-            [backend.logic.project :refer :all]
             [backend.logic.user :refer :all]
+            [backend.logic.session :refer :all]
+            [backend.logic.project :refer :all]
             ))
 
 (defroutes ^:private user-routes
@@ -22,6 +23,12 @@
            (GET "/:id" request (user-read request))
            (PUT "/:id" request (user-update request))
            (DELETE "/:id" request (user-delete request))
+           ))
+
+(defroutes ^:private session-routes
+  (context "/sessions" []
+           (POST "/" request (session-create request))
+           (GET "/active" request (session-list-active request))
            ))
 
 (defroutes ^:private project-routes
@@ -36,6 +43,7 @@
 (defroutes app-handler
   (GET "/" [] "<h1>Hello compojure</h1>")
   user-routes
+  session-routes
   project-routes
   (route/not-found (fn [_] (not-found {:code :entity.not.found}))))
 

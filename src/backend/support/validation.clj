@@ -8,10 +8,10 @@
 
 (defn- validation-message-fn
   "Customize validation message codes."
-  [{:keys [path value metadata]}]
-  (cond
-    (= :bouncer.validators/required (:validator metadata)) "required"
-    (= :bouncer.validators/member (:validator metadata)) "invalid.enum.value"
+  [{{:keys [validator]} :metadata}]
+  (condp = validator
+    :bouncer.validators/required "required"
+    :bouncer.validators/member "invalid.enum.value"
     ))
 
 (defn verify-keys!

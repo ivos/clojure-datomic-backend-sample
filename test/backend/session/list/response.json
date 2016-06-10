@@ -1,0 +1,68 @@
+[
+	{
+		"token": "5757d606-c0aa-4822-b531-00f479aaa001",
+		"created": "2015-10-11T12:34:01Z",
+		"timeToLive": 17,
+		"expires": "2015-10-11T13:04:03Z",
+		"user": {
+			"username": "username-2",
+			"email": "email-2@site.com",
+			"fullName": "Full name 2"
+		}
+	},
+	{
+		"token": "5757d606-c0aa-4822-b531-00f479aaa003",
+		"created": "2015-10-11T12:34:03Z",
+		"timeToLive": 15,
+		"expires": "2015-10-11T13:04:02Z",
+		"user": {
+			"username": "username-1",
+			"email": "email-1@site.com",
+			"fullName": "Full name 1"
+		}
+	},
+	{
+		"token": "5757d606-c0aa-4822-b531-00f479aaa004",
+		"created": "2015-10-11T12:34:02Z",
+		"timeToLive": 14,
+		"expires": "2015-10-11T13:04:02Z",
+		"user": {
+			"username": "username-2",
+			"email": "email-2@site.com",
+			"fullName": "Full name 2"
+		}
+	},
+	{
+		"token": "5757d606-c0aa-4822-b531-00f479aaa005",
+		"created": "2015-10-11T12:34:02Z",
+		"timeToLive": 13,
+		"expires": "2015-10-11T13:04:02Z",
+		"user": {
+			"username": "username-1",
+			"email": "email-1@site.com",
+			"fullName": "Full name 1"
+		}
+	},
+	{
+		"token": "5757d606-c0aa-4822-b531-00f479aaa006",
+		"created": "2015-10-11T12:34:01Z",
+		"timeToLive": 12,
+		"expires": "2015-10-11T13:04:02Z",
+		"user": {
+			"username": "username-2",
+			"email": "email-2@site.com",
+			"fullName": "Full name 2"
+		}
+	},
+	{
+		"token": "5757d606-c0aa-4822-b531-00f479aaa007",
+		"created": "2015-10-11T12:34:01Z",
+		"timeToLive": 11,
+		"expires": "2015-10-11T13:04:01Z",
+		"user": {
+			"username": "username-1",
+			"email": "email-1@site.com",
+			"fullName": "Full name 1"
+		}
+	}
+]

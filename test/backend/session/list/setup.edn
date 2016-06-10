@@ -1,0 +1,87 @@
+[
+
+ ; users
+
+ {:db/id #db/id[:db.part/backend -1]
+  :entity/type :entity.type/user
+  :entity/version 1
+  :user/username "username-1"
+  :user/email "email-1@site.com"
+  :user/fullName "Full name 1"
+  :user/passwordHash "0000000000000000000000000000000000000000000000000000000000000000"
+  }
+ {:db/id #db/id[:db.part/backend -2]
+  :entity/type :entity.type/user
+  :entity/version 1
+  :user/username "username-2"
+  :user/email "email-2@site.com"
+  :user/fullName "Full name 2"
+  :user/passwordHash "0000000000000000000000000000000000000000000000000000000000000000"
+  }
+
+ ; sessions
+
+ {:db/id #db/id[:db.part/backend -11] ; expires 01
+  :entity/type :entity.type/session,
+  :entity/version 1,
+  :session/token #uuid "5757d606-c0aa-4822-b531-00f479aaa007",
+  :session/created #inst "2015-10-11T12:34:01.000-00:00",
+  :session/timeToLive 11,
+  :session/expires #inst "2015-10-11T13:04:01.000-00:00",
+  :session/user #db/id[:db.part/backend -1]
+  }
+ {:db/id #db/id[:db.part/backend -12] ; expires 02, created 01
+  :entity/type :entity.type/session,
+  :entity/version 1,
+  :session/token #uuid "5757d606-c0aa-4822-b531-00f479aaa006",
+  :session/created #inst "2015-10-11T12:34:01.000-00:00",
+  :session/timeToLive 12,
+  :session/expires #inst "2015-10-11T13:04:02.000-00:00",
+  :session/user #db/id[:db.part/backend -2]
+  }
+ {:db/id #db/id[:db.part/backend -13] ; expires 02, created 02, token 5
+  :entity/type :entity.type/session,
+  :entity/version 1,
+  :session/token #uuid "5757d606-c0aa-4822-b531-00f479aaa005",
+  :session/created #inst "2015-10-11T12:34:02.000-00:00",
+  :session/timeToLive 13,
+  :session/expires #inst "2015-10-11T13:04:02.000-00:00",
+  :session/user #db/id[:db.part/backend -1]
+  }
+ {:db/id #db/id[:db.part/backend -14] ; expires 02, created 02, token 4
+  :entity/type :entity.type/session,
+  :entity/version 1,
+  :session/token #uuid "5757d606-c0aa-4822-b531-00f479aaa004",
+  :session/created #inst "2015-10-11T12:34:02.000-00:00",
+  :session/timeToLive 14,
+  :session/expires #inst "2015-10-11T13:04:02.000-00:00",
+  :session/user #db/id[:db.part/backend -2]
+  }
+ {:db/id #db/id[:db.part/backend -15] ; expires 02, created 03
+  :entity/type :entity.type/session,
+  :entity/version 1,
+  :session/token #uuid "5757d606-c0aa-4822-b531-00f479aaa003",
+  :session/created #inst "2015-10-11T12:34:03.000-00:00",
+  :session/timeToLive 15,
+  :session/expires #inst "2015-10-11T13:04:02.000-00:00",
+  :session/user #db/id[:db.part/backend -1]
+  }
+ {:db/id #db/id[:db.part/backend -16] ; expired
+  :entity/type :entity.type/session,
+  :entity/version 1,
+  :session/token #uuid "5757d606-c0aa-4822-b531-00f479aaa002",
+  :session/created #inst "2015-10-11T12:34:01.000-00:00",
+  :session/timeToLive 16,
+  :session/expires #inst "2015-10-11T12:34:55.000-00:00",
+  :session/user #db/id[:db.part/backend -1]
+  }
+ {:db/id #db/id[:db.part/backend -17] ; expires 03
+  :entity/type :entity.type/session,
+  :entity/version 1,
+  :session/token #uuid "5757d606-c0aa-4822-b531-00f479aaa001",
+  :session/created #inst "2015-10-11T12:34:01.000-00:00",
+  :session/timeToLive 17,
+  :session/expires #inst "2015-10-11T13:04:03.000-00:00",
+  :session/user #db/id[:db.part/backend -2]
+  }
+ ]

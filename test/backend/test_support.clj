@@ -35,45 +35,59 @@
 (defn is-response-created
   [response expected-body config]
   (let [location (get-in response [:headers "Location"])]
-    (is (= (:status response) (:created status-code)))
+    (fact "Status code"
+          (:status response) => (status-code :created))
     (is-response-json response)
-    (is (= (get-in response [:headers "ETag"]) "1"))
-    (is (= (:body response) expected-body))
-    (is (.startsWith location (get-in config [:app :deploy-url])))
+    (fact "ETag"
+          (get-in response [:headers "ETag"]) => "1")
+    (fact "Response body"
+          (:body response) => expected-body)
+    (fact "Location start"
+          (.startsWith location (get-in config [:app :deploy-url])) => true)
     ))
 
 (defn is-response-ok
   [response expected-body]
-  (is (= (:status response) (:ok status-code)))
+  (fact "Status code"
+        (:status response) => (status-code :ok))
   (is-response-json response)
-  (is (= (:body response) expected-body))
+  (fact "Response body"
+        (:body response) => expected-body)
   )
 
 (defn is-response-ok-version
   [response expected-body version]
-  (is (= (:status response) (:ok status-code)))
+  (fact "Status code"
+        (:status response) => (status-code :ok))
   (is-response-json response)
-  (is (= (get-in response [:headers "ETag"]) (str version)))
-  (is (= (:body response) expected-body))
+  (fact "ETag"
+        (get-in response [:headers "ETag"]) => (str version))
+  (fact "Response body"
+        (:body response) => expected-body)
   )
 
 (defn is-response-conflict
   [response version]
-  (is (= (:status response) (:conflict status-code)))
-  (is (= (get-in response [:headers "ETag"]) (str version)))
+  (fact "Status code"
+        (:status response) => (status-code :conflict))
+  (fact "ETag"
+        (get-in response [:headers "ETag"]) => (str version))
   )
 
 (defn is-response-precondition-required
   [response]
-  (is (= (:status response) (:precondition-required status-code)))
+  (fact "Status code"
+        (:status response) => (status-code :precondition-required))
   )
 
 (defn not-found-test
   [handler request]
   (let [response (handler request)
-        response-body (read-json "backend/not-found-response")
+        expected-body (read-json "backend/not-found-response")
         ]
-    (is (= (:status response) (:not-found status-code)))
+    (fact "Status code"
+          (:status response) => (status-code :not-found))
     (is-response-json response)
-    (is (= (:body response) response-body))
+    (fact "Response body"
+          (:body response) => expected-body)
     ))

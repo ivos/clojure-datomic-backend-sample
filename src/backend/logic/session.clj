@@ -98,11 +98,16 @@
                     :where [?e :entity/type ?type]
                     [?e :session/expires ?expires] [(>= ?expires ?expires-param)]
                     ]
-                  db :entity.type/session (java.util.Date.))
-        data (map #(get-entity db (first %)) eids)
+                  db :entity.type/session (tc/to-date (t/now)))
+        data (->> eids
+               (map #(get-entity db (first %)))
+               (map #(expand-entity % db :session/user)))
         sorted (sort (compare-by :session/expires descending
                                  :session/created descending
                                  :session/token ascending)
                      data)
-        result (map get-result sorted)]
+        result (->> sorted
+                 (map #(update % :session/user user-get-result))
+                 (map get-result)
+                 )]
     (response result)))

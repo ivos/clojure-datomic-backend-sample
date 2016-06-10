@@ -5,11 +5,11 @@
             [datomic.api :as d]
             [cheshire.core :as json]
             [clj-time.core :as t]
-            [midje.sweet :refer :all]
             [backend.support.db :refer :all]
             [backend.support.datomic :refer :all]
             [backend.support.ring :refer :all]
             [backend.router :refer :all]
+            [midje.sweet :refer :all]
             [backend.test-support :refer :all]
             ))
 

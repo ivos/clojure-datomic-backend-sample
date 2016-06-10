@@ -6,6 +6,7 @@
             [backend.support.datomic :refer :all]
             [backend.support.ring :refer :all]
             [backend.router :refer :all]
+            [midje.sweet :refer :all]
             [backend.test-support :refer :all]
             ))
 
@@ -19,31 +20,33 @@
         config (test-config db-uri)
         handler (create-handler config)]
     (start-database! db-uri)
-    (testing
-      "Full"
-      (let [request-body (read-json "backend/project/create/full-request")
-            verify (read-edn "backend/project/create/full-verify")
-            request (create-request request-body)
-            response (handler request)
-            location (get-in response [:headers "Location"])
-            id (-> location (.split "/") last)
-            db (-> db-uri d/connect d/db)
-            eid (get-eid db :entity.type/project :project/code id)
-            created (get-entity db eid)
-            ]
-        (is-response-created response request-body config)
-        (is (= verify (dissoc created :eid)))
-        (is (= id "code-1"))
-        ))
-    (testing
+    (facts
+     "Full"
+     (let [request-body (read-json "backend/project/create/full-request")
+           verify (read-edn "backend/project/create/full-verify")
+           request (create-request request-body)
+           response (handler request)
+           location (get-in response [:headers "Location"])
+           id (-> location (.split "/") last)
+           db (-> db-uri d/connect d/db)
+           eid (get-eid db :entity.type/project :project/code id)
+           created (get-entity db eid)
+           ]
+       (is-response-created response request-body config)
+       (is (= verify (dissoc created :eid)))
+       (is (= id "code-1"))
+       ))
+    (facts
       "Empty"
       (let [request-body "{}"
             response-body (read-json "backend/project/create/empty-response")
             request (create-request request-body)
             response (handler request)
             ]
-        (is (= (:status response) (:unprocessable-entity status-code)))
+        (fact "Status code"
+              (:status response) => (status-code :unprocessable-entity))
         (is-response-json response)
-        (is (= (:body response) response-body))
+        (fact "Response body"
+              (:body response) => response-body)
         ))
     ))

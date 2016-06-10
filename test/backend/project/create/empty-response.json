@@ -1,11 +1,11 @@
 {
-	"project/code": [
+	"code": [
 		"required"
 	],
-	"project/name": [
+	"name": [
 		"required"
 	],
-	"project/visibility": [
+	"visibility": [
 		"required"
 	]
 }

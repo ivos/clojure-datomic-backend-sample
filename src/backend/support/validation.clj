@@ -28,8 +28,9 @@
   "Throw ValidationException on validation failure."
   [& args]
   (when-let [errors (first (apply b/validate (cons validation-message-fn args)))]
-    (log/debug "Validation failure" errors)
-    (throw+ {:type ::validation-failure :errors errors})))
+    (let [result (zipmap (map name (keys errors)) (vals errors))]
+      (log/debug "Validation failure" errors)
+      (throw+ {:type ::validation-failure :errors result}))))
 
 (defn wrap-validation
   "Ring middleware to catch ValidationException and convert it to

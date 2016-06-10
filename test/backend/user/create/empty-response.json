@@ -1,8 +1,8 @@
 {
-	"user/username": [
+	"username": [
 		"required"
 	],
-	"user/email": [
+	"email": [
 		"required"
 	],
 	"password": [

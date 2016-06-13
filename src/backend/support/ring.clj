@@ -10,6 +10,7 @@
    :no-content 204
    :unauthorized 401
    :not-found 404
+   :method-not-allowed 405
    :conflict 409
    :unprocessable-entity 422
    :precondition-required 428

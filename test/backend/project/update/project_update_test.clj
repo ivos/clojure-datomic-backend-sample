@@ -1,10 +1,11 @@
 (ns backend.project.update.project-update-test
-  (:require [clojure.test :refer :all]
-            [ring.mock.request :as mock]
+  (:require [ring.mock.request :as mock]
             [datomic.api :as d]
             [backend.support.db :refer :all]
             [backend.support.datomic :refer :all]
+            [backend.support.ring :refer :all]
             [backend.router :refer :all]
+            [midje.sweet :refer :all]
             [backend.test-support :refer :all]
             ))
 
@@ -17,7 +18,8 @@
       request
       (mock/header request "If-Match" version))))
 
-(deftest project-update-test
+(facts
+  "Project update"
   (let [db-uri (test-db-uri)
         config (test-config db-uri)
         handler (create-handler config)
@@ -26,7 +28,7 @@
         db (:db-after @(d/transact (d/connect db-uri) setup))
         eid (get-eid db :entity.type/project :project/code "code-full")
         ]
-    (testing
+    (fact
       "Full"
       (let [request-body (read-json "backend/project/update/full-request")
             verify (read-edn "backend/project/update/full-verify")
@@ -37,27 +39,30 @@
             db-after (-> db-uri d/connect d/db)
             updated (get-entity db-after eid)
             ]
-        ;(clojure.pprint/pprint response)
         (is-response-ok-version response request-body 124)
-        (is (= verify (dissoc updated :eid)))
-        (is (= id "code-full-a"))
+        (fact "Verify"
+              (dissoc updated :eid) => verify)
+        (fact "Id"
+              id => "code-full-a")
         ))
-    (testing
+    (fact
       "Not found"
       (let [request-body (read-json "backend/project/update/full-request")]
         (not-found-test handler (create-request "non-existent" 123 request-body))))
-    (testing
+    (fact
       "Empty"
       (let [request-body "{}"
             response-body (read-json "backend/project/update/empty-response")
             request (create-request "code-optimistic" 123 request-body)
             response (handler request)
             ]
-        (is (= (:status response) 422))
+        (fact "Status code"
+              (:status response) => (status-code :unprocessable-entity))
         (is-response-json response)
-        (is (= (:body response) response-body))
+        (fact "Response body"
+              (:body response) => response-body)
         ))
-    (testing
+    (fact
       "Optimistic lock failure"
       (let [eid (get-eid db :entity.type/project :project/code "code-optimistic")
             request-body (read-json "backend/project/update/full-request")
@@ -68,9 +73,10 @@
             updated (get-entity db-after eid)
             ]
         (is-response-conflict response 123) ; TODO switch to precondition-failed?
-        (is (= verify (dissoc updated :eid)))
+        (fact "Verify"
+              (dissoc updated :eid) => verify)
         ))
-    (testing
+    (fact
       "Version missing"
       (let [eid (get-eid db :entity.type/project :project/code "code-optimistic")
             request-body (read-json "backend/project/update/full-request")
@@ -81,6 +87,7 @@
             updated (get-entity db-after eid)
             ]
         (is-response-precondition-required response)
-        (is (= verify (dissoc updated :eid)))
+        (fact "Verify"
+              (dissoc updated :eid) => verify)
         ))
     ))

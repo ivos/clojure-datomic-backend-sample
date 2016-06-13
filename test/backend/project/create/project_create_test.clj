@@ -1,6 +1,5 @@
 (ns backend.project.create.project-create-test
-  (:require [clojure.test :refer :all]
-            [ring.mock.request :as mock]
+  (:require [ring.mock.request :as mock]
             [datomic.api :as d]
             [backend.support.db :refer :all]
             [backend.support.datomic :refer :all]
@@ -15,7 +14,8 @@
   (-> (mock/request :post "/projects" body)
     (mock/content-type "application/json")))
 
-(deftest project-create-test
+(facts
+  "Project create"
   (let [db-uri (test-db-uri)
         config (test-config db-uri)
         handler (create-handler config)]
@@ -33,8 +33,10 @@
            created (get-entity db eid)
            ]
        (is-response-created response request-body config)
-       (is (= verify (dissoc created :eid)))
-       (is (= id "code-1"))
+       (fact "Verify"
+             (dissoc created :eid) => verify)
+       (fact "Id"
+             id => "code-1")
        ))
     (facts
       "Empty"

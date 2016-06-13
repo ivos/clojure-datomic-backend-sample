@@ -1,10 +1,11 @@
 (ns backend.user.update.user-update-test
-  (:require [clojure.test :refer :all]
-            [ring.mock.request :as mock]
+  (:require [ring.mock.request :as mock]
             [datomic.api :as d]
             [backend.support.db :refer :all]
             [backend.support.datomic :refer :all]
+            [backend.support.ring :refer :all]
             [backend.router :refer :all]
+            [midje.sweet :refer :all]
             [backend.test-support :refer :all]
             ))
 
@@ -17,7 +18,8 @@
       request
       (mock/header request "If-Match" version))))
 
-(deftest user-update-test
+(facts
+  "User update"
   (let [db-uri (test-db-uri)
         config (test-config db-uri)
         handler (create-handler config)
@@ -25,7 +27,7 @@
         setup (read-edn "backend/user/update/setup")
         db (:db-after @(d/transact (d/connect db-uri) setup))
         ]
-    (testing
+    (facts
       "Full"
       (let [eid (get-eid db :entity.type/user :user/username "username-full")
             request-body (read-json "backend/user/update/full-request")
@@ -39,10 +41,12 @@
             updated (get-entity db-after eid)
             ]
         (is-response-ok-version response response-body 124)
-        (is (= verify (dissoc updated :eid)))
-        (is (= id "username-full-a"))
+        (fact "Verify"
+              (dissoc updated :eid) => verify)
+        (fact "Id"
+              id => "username-full-a")
         ))
-    (testing
+    (facts
       "Minimal"
       (let [eid (get-eid db :entity.type/user :user/username "username-minimal")
             request-body (read-json "backend/user/update/minimal-request")
@@ -56,25 +60,29 @@
             updated (get-entity db-after eid)
             ]
         (is-response-ok-version response response-body 124)
-        (is (= verify (dissoc updated :eid)))
-        (is (= id "username-minimal-a"))
+        (fact "Verify"
+              (dissoc updated :eid) => verify)
+        (fact "Id"
+              id => "username-minimal-a")
         ))
-    (testing
+    (facts
       "Not found"
       (let [request-body (read-json "backend/user/update/full-request")]
         (not-found-test handler (create-request "non-existent" 123 request-body))))
-    (testing
+    (facts
       "Empty"
       (let [request-body "{}"
             response-body (read-json "backend/user/update/empty-response")
             request (create-request "username-optimistic" 123 request-body)
             response (handler request)
             ]
-        (is (= (:status response) 422))
+        (fact "Status code"
+              (:status response) => (status-code :unprocessable-entity))
         (is-response-json response)
-        (is (= (:body response) response-body))
+        (fact "Response body"
+              (:body response) => response-body)
         ))
-    (testing
+    (facts
       "Optimistic lock failure"
       (let [eid (get-eid db :entity.type/user :user/username "username-optimistic")
             request-body (read-json "backend/user/update/full-request")
@@ -85,9 +93,10 @@
             updated (get-entity db-after eid)
             ]
         (is-response-conflict response 123) ; TODO switch to precondition-failed?
-        (is (= verify (dissoc updated :eid)))
+        (fact "Verify"
+              (dissoc updated :eid) => verify)
         ))
-    (testing
+    (facts
       "Version missing"
       (let [eid (get-eid db :entity.type/user :user/username "username-optimistic")
             request-body (read-json "backend/user/update/full-request")
@@ -98,6 +107,7 @@
             updated (get-entity db-after eid)
             ]
         (is-response-precondition-required response)
-        (is (= verify (dissoc updated :eid)))
+        (fact "Verify"
+              (dissoc updated :eid) => verify)
         ))
     ))

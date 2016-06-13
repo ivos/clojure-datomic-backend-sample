@@ -1,9 +1,9 @@
 (ns backend.user.list.user-list-test
-  (:require [clojure.test :refer :all]
-            [ring.mock.request :as mock]
+  (:require [ring.mock.request :as mock]
             [datomic.api :as d]
             [backend.support.db :refer :all]
             [backend.router :refer :all]
+            [midje.sweet :refer :all]
             [backend.test-support :refer :all]
             ))
 
@@ -11,14 +11,15 @@
   [params]
   (mock/request :get "/users" params))
 
-(deftest user-list-test
+(facts
+  "User list"
   (let [db-uri (test-db-uri)
         config (test-config db-uri)
         handler (create-handler config)
         _ (start-database! db-uri)
         setup (read-edn "backend/user/list/setup")
         db (:db-after @(d/transact (d/connect db-uri) setup))]
-    (testing
+    (facts
       "Full query"
       (let [params {:username "uSeRnAmE-kEy"
                     :email "eMaIl-KeY"
@@ -29,7 +30,7 @@
             ]
         (is-response-ok response response-body)
         ))
-    (testing
+    (facts
       "Empty query"
       (let [params {:username ""
                     :email ""
@@ -40,7 +41,7 @@
             ]
         (is-response-ok response response-body)
         ))
-    (testing
+    (facts
       "No query"
       (let [params {}
             request (create-request params)

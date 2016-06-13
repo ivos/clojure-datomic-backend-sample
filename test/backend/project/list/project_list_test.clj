@@ -1,9 +1,9 @@
 (ns backend.project.list.project-list-test
-  (:require [clojure.test :refer :all]
-            [ring.mock.request :as mock]
+  (:require [ring.mock.request :as mock]
             [datomic.api :as d]
             [backend.support.db :refer :all]
             [backend.router :refer :all]
+            [midje.sweet :refer :all]
             [backend.test-support :refer :all]
             ))
 
@@ -11,14 +11,15 @@
   [params]
   (mock/request :get "/projects" params))
 
-(deftest project-list-test
+(facts
+  "Project list"
   (let [db-uri (test-db-uri)
         config (test-config db-uri)
         handler (create-handler config)
         _ (start-database! db-uri)
         setup (read-edn "backend/project/list/setup")
         db (:db-after @(d/transact (d/connect db-uri) setup))]
-    (testing
+    (fact
       "Full query"
       (let [params {:name "nAmE-kEy"
                     :code "CoDe-KeY"
@@ -27,10 +28,9 @@
             response (handler request)
             response-body (read-json "backend/project/list/full-query-response")
             ]
-        ;(clojure.pprint/pprint response)
         (is-response-ok response response-body)
         ))
-    (testing
+    (fact
       "Empty query"
       (let [params {:name ""
                     :code ""
@@ -41,7 +41,7 @@
             ]
         (is-response-ok response response-body)
         ))
-    (testing
+    (fact
       "No query"
       (let [params {}
             request (create-request params)

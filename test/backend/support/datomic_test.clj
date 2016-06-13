@@ -1,25 +1,23 @@
 (ns backend.support.datomic-test
-  (:require [clojure.test :refer :all]
-            [backend.support.datomic :refer :all]))
+  (:require [backend.support.datomic :refer :all]
+            [midje.sweet :refer :all]))
 
-(deftest prepare-query-params-test
-  (testing
-    (let [attributes [:with-value :empty-string :a-nil :number-zero :false-bool :number-non-zero :missing]
-          data {:with-value "abc"
-                :empty-string ""
-                :a-nil nil
-                :number-zero 0
-                :false-bool false
-                :number-non-zero 123
-                :invalid "some-value"}]
-      (is (= (prepare-query-params data attributes nil)
-             {:with-value "abc"
-              :empty-string :nil
-              :a-nil :nil
+(facts
+  "Prepare query params"
+  (let [attributes [:with-value :empty-string :a-nil :number-zero :false-bool :number-non-zero :missing]
+        data {:with-value "abc"
+              :empty-string ""
+              :a-nil nil
               :number-zero 0
               :false-bool false
               :number-non-zero 123
-              :invalid "some-value"
-              :missing :nil}
-             ))))
-  )
+              :invalid "some-value"}
+        expected {:with-value "abc"
+                  :empty-string :nil
+                  :a-nil :nil
+                  :number-zero 0
+                  :false-bool false
+                  :number-non-zero 123
+                  :invalid "some-value"
+                  :missing :nil}]
+    (prepare-query-params data attributes nil) => expected))

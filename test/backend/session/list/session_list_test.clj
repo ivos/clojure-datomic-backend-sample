@@ -1,6 +1,5 @@
 (ns backend.session.list.session-list-test
-  (:require [clojure.test :refer :all]
-            [ring.mock.request :as mock]
+  (:require [ring.mock.request :as mock]
             [datomic.api :as d]
             [clj-time.core :as t]
             [backend.support.db :refer :all]
@@ -13,7 +12,8 @@
   []
   (mock/request :get "/sessions/active"))
 
-(deftest session-list-test
+(facts
+  "Session list"
   (let [db-uri (test-db-uri)
         config (test-config db-uri)
         handler (create-handler config)

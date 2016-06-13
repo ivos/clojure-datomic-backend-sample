@@ -1,11 +1,11 @@
 (ns backend.user.create.user-create-test
-  (:require [clojure.test :refer :all]
-            [ring.mock.request :as mock]
+  (:require [ring.mock.request :as mock]
             [datomic.api :as d]
             [backend.support.db :refer :all]
             [backend.support.datomic :refer :all]
             [backend.support.ring :refer :all]
             [backend.router :refer :all]
+            [midje.sweet :refer :all]
             [backend.test-support :refer :all]
             ))
 
@@ -14,12 +14,13 @@
   (-> (mock/request :post "/users" body)
     (mock/content-type "application/json")))
 
-(deftest user-create-test
+(facts
+  "User create"
   (let [db-uri (test-db-uri)
         config (test-config db-uri)
         handler (create-handler config)]
     (start-database! db-uri)
-    (testing
+    (fact
       "Full"
       (let [request-body (read-json "backend/user/create/full-request")
             response-body (read-json "backend/user/create/full-response")
@@ -33,10 +34,12 @@
             created (get-entity db eid)
             ]
         (is-response-created response response-body config)
-        (is (= verify (dissoc created :eid)))
-        (is (= id "username-full"))
+        (fact "Verify"
+              (dissoc created :eid) => verify)
+        (fact "Id"
+              id => "username-full")
         ))
-    (testing
+    (fact
       "Minimal"
       (let [request-body (read-json "backend/user/create/minimal-request")
             response-body (read-json "backend/user/create/minimal-response")
@@ -50,18 +53,22 @@
             created (get-entity db eid)
             ]
         (is-response-created response response-body config)
-        (is (= verify (dissoc created :eid)))
-        (is (= id "username-minimal"))
+        (fact "Verify"
+              (dissoc created :eid) => verify)
+        (fact "Id"
+              id => "username-minimal")
         ))
-    (testing
+    (fact
       "Empty"
       (let [request-body "{}"
             response-body (read-json "backend/user/create/empty-response")
             request (create-request request-body)
             response (handler request)
             ]
-        (is (= (:status response) (:unprocessable-entity status-code)))
+        (fact "Status code"
+              (:status response) => (status-code :unprocessable-entity))
         (is-response-json response)
-        (is (= (:body response) response-body))
+        (fact "Response body"
+              (:body response) => response-body)
         ))
     ))

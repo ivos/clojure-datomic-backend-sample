@@ -1,6 +1,5 @@
 (ns backend.test-support
   (:require [clojure.edn :as edn]
-            [clojure.test :refer :all]
             [cheshire.core :as json]
             [clj-time.core :as t]
             [midje.sweet :refer [fact]]

@@ -73,6 +73,8 @@
                      )
         data (hash-password-data data)
         tx (entity-create-tx db-partition :entity.type/user attributes data)
+        tx (conj tx
+                 [:ensure-unique nil :user/username (:user/username data)])
         tx-result @(d/transact conn tx)
         _ (log/trace "Tx result" tx-result)
         db-after (:db-after tx-result)

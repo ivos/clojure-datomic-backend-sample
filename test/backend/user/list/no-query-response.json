@@ -1,15 +1,15 @@
 [
 	{
-		"username": "some-username-key-aaa",
-		"email": "email-08-email-kez@site.com",
-		"fullName": "Some name-key aaa",
-		"uri": "http://localhost:3000/users/some-username-key-aaa"
-	},
-	{
 		"username": "some-username-key-aza",
 		"email": "email-05-email-key@site.com",
 		"fullName": "Some name-key aaa",
 		"uri": "http://localhost:3000/users/some-username-key-aza"
+	},
+	{
+		"username": "some-username-key-email-not-match",
+		"email": "email-08-email-kez@site.com",
+		"fullName": "Some name-key aaa",
+		"uri": "http://localhost:3000/users/some-username-key-email-not-match"
 	},
 	{
 		"username": "some-username-kez-aaa",
@@ -42,9 +42,9 @@
 		"uri": "http://localhost:3000/users/some-USERNAME-KEY-aaa"
 	},
 	{
-		"username": "some-username-key-aaa",
+		"username": "some-username-key-fullName-not-match",
 		"email": "email-09-email-key@site.com",
 		"fullName": "Some name-kez aaa",
-		"uri": "http://localhost:3000/users/some-username-key-aaa"
+		"uri": "http://localhost:3000/users/some-username-key-fullName-not-match"
 	}
 ]

@@ -11,6 +11,7 @@
             [slingshot.slingshot :refer [try+]]
             [backend.support.entity :refer [filter-password]]
             [backend.support.validation :refer [wrap-validation]]
+            [backend.support.ring :refer :all]
             [backend.logic.user :refer :all]
             [backend.logic.session :refer :all]
             [backend.logic.project :refer :all]
@@ -68,7 +69,16 @@
     [request]
     (try+ (handler request)
           (catch [:type :optimistic-locking-failure] {:keys [:v]}
-            (header {:status 409} "ETag" v)))))
+            (header {:status (status-code :conflict)} "ETag" v)))))
+
+(defn- wrap-unique-attribute-violation
+  [handler]
+  (fn
+    [request]
+    (try+ (handler request)
+          (catch [:type :unique-attribute-constraint-violation] {:keys [:a]}
+            {:status (status-code :unprocessable-entity)
+             :body {(name a) ["already.exists"]}}))))
 
 (defn- wrap-custom-response
   [handler]
@@ -104,6 +114,7 @@
   (-> app-handler
     wrap-validation
     wrap-conflict
+    wrap-unique-attribute-violation
     wrap-custom-response
     wrap-log
     (wrap-json-body (:json config))

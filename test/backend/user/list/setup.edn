@@ -43,7 +43,7 @@
  {:db/id #db/id[:db.part/backend -6]
   :entity/type :entity.type/user
   :entity/version 1
-  :user/username "some-username-key-aza"
+  :user/username "some-username-key-minimal"
   :user/email "email-06-email-key@site.com"
   :user/passwordHash "0000000000000000000000000000000000000000000000000000000000000000"
   }
@@ -60,7 +60,7 @@
  {:db/id #db/id[:db.part/backend -8]
   :entity/type :entity.type/user
   :entity/version 1
-  :user/username "some-username-key-aaa"
+  :user/username "some-username-key-email-not-match"
   :user/email "email-08-email-kez@site.com"
   :user/fullName "Some name-key aaa"
   :user/passwordHash "0000000000000000000000000000000000000000000000000000000000000000"
@@ -69,7 +69,7 @@
  {:db/id #db/id[:db.part/backend -9]
   :entity/type :entity.type/user
   :entity/version 1
-  :user/username "some-username-key-aaa"
+  :user/username "some-username-key-fullName-not-match"
   :user/email "email-09-email-key@site.com"
   :user/fullName "Some name-kez aaa"
   :user/passwordHash "0000000000000000000000000000000000000000000000000000000000000000"

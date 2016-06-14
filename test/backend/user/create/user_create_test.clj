@@ -18,8 +18,11 @@
   "User create"
   (let [db-uri (test-db-uri)
         config (test-config db-uri)
-        handler (create-handler config)]
-    (start-database! db-uri)
+        handler (create-handler config)
+        _ (start-database! db-uri)
+        setup (read-edn "backend/user/create/setup")
+        db (:db-after @(d/transact (d/connect db-uri) setup))
+        ]
     (fact
       "Full"
       (let [request-body (read-json "backend/user/create/full-request")
@@ -29,9 +32,9 @@
             response (handler request)
             location (get-in response [:headers "Location"])
             id (-> location (.split "/") last)
-            db (-> db-uri d/connect d/db)
-            eid (get-eid db :entity.type/user :user/username id)
-            created (get-entity db eid)
+            db-after (-> db-uri d/connect d/db)
+            eid (get-eid db-after :entity.type/user :user/username id)
+            created (get-entity db-after eid)
             ]
         (is-response-created response response-body config)
         (fact "Verify"
@@ -48,9 +51,9 @@
             response (handler request)
             location (get-in response [:headers "Location"])
             id (-> location (.split "/") last)
-            db (-> db-uri d/connect d/db)
-            eid (get-eid db :entity.type/user :user/username id)
-            created (get-entity db eid)
+            db-after (-> db-uri d/connect d/db)
+            eid (get-eid db-after :entity.type/user :user/username id)
+            created (get-entity db-after eid)
             ]
         (is-response-created response response-body config)
         (fact "Verify"
@@ -70,5 +73,31 @@
         (is-response-json response)
         (fact "Response body"
               (:body response) => response-body)
+        ))
+    (fact
+      "Username exists"
+      (let [request-body (read-json "backend/user/create/username-exists-request")
+            response-body (read-json "backend/user/create/username-exists-response")
+            verify (read-edn "backend/user/create/existing-verify")
+            request (create-request request-body)
+            response (handler request)
+            db-after (-> db-uri d/connect d/db)
+            count (-> (d/q '[:find (count ?e)
+                         :in $ ?username
+                         :where [?e :user/username ?username]]
+                       db-after "username-existing")
+                    ffirst)
+            eid (get-eid db-after :entity.type/user :user/username "username-existing")
+            existing (get-entity db-after eid)
+            ]
+        (fact "No multiple records"
+              count => 1)
+        (fact "Status code"
+              (:status response) => (status-code :unprocessable-entity))
+        (is-response-json response)
+        (fact "Response body"
+              (:body response) => response-body)
+        (fact "Verify"
+              (dissoc existing :eid) => verify)
         ))
     ))

@@ -1,0 +1,23 @@
+[
+ {:db/ident :ensure-unique
+  :db/doc "Ensure unique attribute."
+  :db/fn #db/fn
+{:lang "clojure"
+ :params [db e a v]
+ :code (let [all-eids (-> (q [:find '?e
+                              :in '$ '?value
+                              :where ['?e a '?value]]
+                               db v)
+                        first)
+             other-eids (vec (remove #{e} all-eids))]
+         (when-not (empty? other-eids)
+           (throw (ex-info (str "Unique attribute constraint violated."
+                                " For attribute " a " value " v " already exists on entities " other-eids ".")
+                           {:type :unique-attribute-constraint-violation
+                            :a a
+                            :v v
+                            :eids other-eids}))
+           ))
+ }
+  :db/id #db/id[:db.part/backend]}
+ ]

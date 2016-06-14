@@ -1,0 +1,8 @@
+{
+ :entity/type :entity.type/user,
+ :entity/version 123,
+ :user/username "username-existing"
+ :user/email "email-existing@site.com"
+ :user/fullName "Full Name existing"
+ :user/passwordHash "0000000000000000000000000000000000000000000000000000000000000000"
+ }

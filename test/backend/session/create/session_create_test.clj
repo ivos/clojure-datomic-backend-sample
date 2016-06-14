@@ -127,7 +127,7 @@
     (facts
       "User not found"
       (let [request-body (read-json "backend/session/create/user-not-found-request")
-            response-body (read-json "backend/session/create/authentication-failure-response")
+            response-body (read-json "backend/session/create/user-not-found-response")
             request (create-request request-body)
             response (handler request)
             ]
@@ -140,7 +140,7 @@
     (facts
       "Password mismatch"
       (let [request-body (read-json "backend/session/create/password-mismatch-request")
-            response-body (read-json "backend/session/create/authentication-failure-response")
+            response-body (read-json "backend/session/create/password-mismatch-response")
             request (create-request request-body)
             response (handler request)
             ]

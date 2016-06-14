@@ -40,15 +40,18 @@
                        [?e :entity/type :entity.type/user]
                        (or [?e :user/username ?login]
                            [?e :user/email ?login])
-                       [?e :user/passwordHash ?passwordHash]
                        ]
                      db (:user/username data) (hash-password (:password data)))
               ffirst)]
     (if (nil? eid)
       (throw+ {:type :custom-response
                :response {:status (status-code :unauthorized)
-                          :body {:code :user.authentication.failure}}})
-      eid)))
+                          :body {:code :user.not.found}}})
+      (if (= (:user/passwordHash (d/entity db eid)) (hash-password (:password data)))
+        eid
+        (throw+ {:type :custom-response
+                 :response {:status (status-code :unauthorized)
+                            :body {:code :password.mismatch}}})))))
 
 ; action functions
 

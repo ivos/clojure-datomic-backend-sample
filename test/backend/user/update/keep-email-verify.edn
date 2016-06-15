@@ -1,0 +1,8 @@
+{
+ :entity/type :entity.type/user
+ :entity/version 124
+ :user/username "username-keep-email-a"
+ :user/email "email-keep-email@site.com"
+ :user/fullName "Full Name keep-email a"
+ :user/passwordHash "96ca1a27ea5cb7cecc413e3207dd285dda936355e06d4066caa855fa6c26eead"
+ }

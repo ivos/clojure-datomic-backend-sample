@@ -46,4 +46,20 @@
   :user/fullName "Full Name keep-username"
   :user/passwordHash "0000000000000000000000000000000000000000000000000000000000000000"
   }
+ {:db/id #db/id[:db.part/backend -7]
+  :entity/type :entity.type/user
+  :entity/version 123
+  :user/username "username-email-existing-source"
+  :user/email "email-email-existing-source@site.com"
+  :user/fullName "Full Name email-existing-source"
+  :user/passwordHash "0000000000000000000000000000000000000000000000000000000000000000"
+  }
+ {:db/id #db/id[:db.part/backend -8]
+  :entity/type :entity.type/user
+  :entity/version 123
+  :user/username "username-keep-email"
+  :user/email "email-keep-email@site.com"
+  :user/fullName "Full Name keep-email"
+  :user/passwordHash "0000000000000000000000000000000000000000000000000000000000000000"
+  }
  ]

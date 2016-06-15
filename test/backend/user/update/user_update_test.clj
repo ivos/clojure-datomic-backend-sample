@@ -155,4 +155,49 @@
         (fact "Id"
               id => "username-keep-username")
         ))
+    (fact
+      "Email exists"
+      (let [request-body (read-json "backend/user/update/email-exists-request")
+            response-body (read-json "backend/user/update/email-exists-response")
+            verify (read-edn "backend/user/update/existing-email-verify")
+            request (create-request "username-email-existing-source" 123 request-body)
+            response (handler request)
+            db-after (-> db-uri d/connect d/db)
+            count (-> (d/q '[:find (count ?e)
+                         :in $ ?email
+                         :where [?e :user/email ?email]]
+                       db-after "email-existing@site.com")
+                    ffirst)
+            eid (get-eid db-after :entity.type/user :user/username "username-email-existing-source")
+            existing (get-entity db-after eid)
+            ]
+        (fact "No multiple records"
+              count => 1)
+        (fact "Status code"
+              (:status response) => (status-code :unprocessable-entity))
+        (is-response-json response)
+        (fact "Response body"
+              (:body response) => response-body)
+        (fact "Verify"
+              (dissoc existing :eid) => verify)
+        ))
+    (facts
+      "Keep email"
+      (let [eid (get-eid db :entity.type/user :user/username "username-keep-email")
+            request-body (read-json "backend/user/update/keep-email-request")
+            response-body (read-json "backend/user/update/keep-email-response")
+            verify (read-edn "backend/user/update/keep-email-verify")
+            request (create-request "username-keep-email" 123 request-body)
+            response (handler request)
+            location (get-in response [:headers "Location"])
+            id (-> location (.split "/") last)
+            db-after (-> db-uri d/connect d/db)
+            updated (get-entity db-after eid)
+            ]
+        (is-response-ok-version response response-body 124)
+        (fact "Verify"
+              (dissoc updated :eid) => verify)
+        (fact "Id"
+              id => "username-keep-email-a")
+        ))
     ))

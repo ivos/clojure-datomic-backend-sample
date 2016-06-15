@@ -1,4 +1,7 @@
 [
+
+ ; users
+
  {:db/id #db/id[:db.part/backend -1]
   :entity/type :entity.type/user
   :entity/version 123
@@ -6,12 +9,58 @@
   :user/email "email-full@site.com"
   :user/passwordHash "0000000000000000000000000000000000000000000000000000000000000000"
   }
- {:db/id #db/id[:db.part/backend -3]
+ {:db/id #db/id[:db.part/backend -2]
   :entity/type :entity.type/user
   :entity/version 123
   :user/username "username-optimistic"
   :user/email "email-optimistic@site.com"
   :user/fullName "Full Name optimistic"
   :user/passwordHash "0000000000000000000000000000000000000000000000000000000000000000"
+  }
+ {:db/id #db/id[:db.part/backend -3]
+  :entity/type :entity.type/user
+  :entity/version 123
+  :user/username "username-other"
+  :user/email "email-other@site.com"
+  :user/passwordHash "0000000000000000000000000000000000000000000000000000000000000000"
+  }
+
+ ; sessions
+
+ {:db/id #db/id[:db.part/backend -11]
+  :entity/type :entity.type/session,
+  :entity/version 1,
+  :session/token #uuid "5757d606-c0aa-4822-b531-00f479aaa001",
+  :session/created #inst "2015-10-11T12:34:01.000-00:00",
+  :session/timeToLive 11,
+  :session/expires #inst "2015-10-11T13:04:01.000-00:00",
+  :session/user #db/id[:db.part/backend -1]
+  }
+ {:db/id #db/id[:db.part/backend -12] ; other user
+  :entity/type :entity.type/session,
+  :entity/version 1,
+  :session/token #uuid "5757d606-c0aa-4822-b531-00f479aaa002",
+  :session/created #inst "2015-10-11T12:34:01.000-00:00",
+  :session/timeToLive 11,
+  :session/expires #inst "2015-10-11T13:04:01.000-00:00",
+  :session/user #db/id[:db.part/backend -3]
+  }
+ {:db/id #db/id[:db.part/backend -13]
+  :entity/type :entity.type/session,
+  :entity/version 1,
+  :session/token #uuid "5757d606-c0aa-4822-b531-00f479aaa003",
+  :session/created #inst "2015-10-11T12:34:01.000-00:00",
+  :session/timeToLive 11,
+  :session/expires #inst "2015-10-11T13:04:01.000-00:00",
+  :session/user #db/id[:db.part/backend -1]
+  }
+ {:db/id #db/id[:db.part/backend -14]
+  :entity/type :entity.type/session,
+  :entity/version 1,
+  :session/token #uuid "5757d606-c0aa-4822-b531-00f479aaa004",
+  :session/created #inst "2015-10-11T12:34:01.000-00:00",
+  :session/timeToLive 11,
+  :session/expires #inst "2015-10-11T13:04:01.000-00:00",
+  :session/user #db/id[:db.part/backend -1]
   }
  ]

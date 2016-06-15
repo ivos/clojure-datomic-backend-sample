@@ -33,11 +33,17 @@
             response (handler request)
             db-after (-> db-uri d/connect d/db)
             eid (maybe-eid db-after :entity.type/user :user/username "username-full")
+            session-uuids (->> (d/q '[:find ?uuid
+                                      :where [?e :session/token ?uuid]]
+                                    db-after)
+                            (map (comp str last str first)) sort vec)
             ]
         (fact "Status code"
               (:status response) => (status-code :no-content))
         (fact "Id"
               eid => nil)
+        (fact "Sessions deleted"
+              session-uuids => ["2"])
         ))
     (facts
       "Not found"

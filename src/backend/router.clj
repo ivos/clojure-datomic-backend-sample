@@ -76,7 +76,8 @@
   (fn
     [request]
     (try+ (handler request)
-          (catch [:type :unique-attribute-constraint-violation] {:keys [:a]}
+          (catch [:type :unique-attribute-constraint-violation] {:keys [:a :message]}
+            (log/info message)
             {:status (status-code :unprocessable-entity)
              :body {(name a) ["already.exists"]}}))))
 

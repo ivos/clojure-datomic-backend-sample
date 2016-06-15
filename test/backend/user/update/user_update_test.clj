@@ -85,7 +85,7 @@
     (facts
       "Optimistic lock failure"
       (let [eid (get-eid db :entity.type/user :user/username "username-optimistic")
-            request-body (read-json "backend/user/update/full-request")
+            request-body (read-json "backend/user/update/optimistic-request")
             verify (read-edn "backend/user/update/optimistic-verify")
             request (create-request "username-optimistic" 122 request-body)
             response (handler request)
@@ -109,5 +109,50 @@
         (is-response-precondition-required response)
         (fact "Verify"
               (dissoc updated :eid) => verify)
+        ))
+    (fact
+      "Username exists"
+      (let [request-body (read-json "backend/user/update/username-exists-request")
+            response-body (read-json "backend/user/update/username-exists-response")
+            verify (read-edn "backend/user/update/existing-username-verify")
+            request (create-request "username-username-existing-source" 123 request-body)
+            response (handler request)
+            db-after (-> db-uri d/connect d/db)
+            count (-> (d/q '[:find (count ?e)
+                         :in $ ?username
+                         :where [?e :user/username ?username]]
+                       db-after "username-existing")
+                    ffirst)
+            eid (get-eid db-after :entity.type/user :user/username "username-username-existing-source")
+            existing (get-entity db-after eid)
+            ]
+        (fact "No multiple records"
+              count => 1)
+        (fact "Status code"
+              (:status response) => (status-code :unprocessable-entity))
+        (is-response-json response)
+        (fact "Response body"
+              (:body response) => response-body)
+        (fact "Verify"
+              (dissoc existing :eid) => verify)
+        ))
+    (facts
+      "Keep username"
+      (let [eid (get-eid db :entity.type/user :user/username "username-keep-username")
+            request-body (read-json "backend/user/update/keep-username-request")
+            response-body (read-json "backend/user/update/keep-username-response")
+            verify (read-edn "backend/user/update/keep-username-verify")
+            request (create-request "username-keep-username" 123 request-body)
+            response (handler request)
+            location (get-in response [:headers "Location"])
+            id (-> location (.split "/") last)
+            db-after (-> db-uri d/connect d/db)
+            updated (get-entity db-after eid)
+            ]
+        (is-response-ok-version response response-body 124)
+        (fact "Verify"
+              (dissoc updated :eid) => verify)
+        (fact "Id"
+              id => "username-keep-username")
         ))
     ))

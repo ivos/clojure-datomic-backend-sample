@@ -146,6 +146,8 @@
         _ (log/debug "Read" db-data)
         tx-attributes (if (:user/passwordHash data) attributes core-attributes)
         tx (entity-update-tx db-partition :entity.type/user tx-attributes db-data data version)
+        tx (conj tx
+                 [:ensure-unique eid :user/username (:user/username data)])
         tx-result @(d/transact conn tx)
         _ (log/trace "Tx result" tx-result)
         db-after (:db-after tx-result)

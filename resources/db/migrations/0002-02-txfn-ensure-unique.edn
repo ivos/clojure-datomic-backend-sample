@@ -11,12 +11,14 @@
                         first)
              other-eids (vec (remove #{e} all-eids))]
          (when-not (empty? other-eids)
-           (throw (ex-info (str "Unique attribute constraint violated."
-                                " For attribute " a " value " v " already exists on entities " other-eids ".")
-                           {:type :unique-attribute-constraint-violation
-                            :a a
-                            :v v
-                            :eids other-eids}))
+           (let [message (str "Unique attribute constraint violated."
+                              " For attribute " a " value " v " already exists on entities " other-eids ".")]
+             (throw (ex-info message
+                             {:type :unique-attribute-constraint-violation
+                              :a a
+                              :v v
+                              :eids other-eids
+                              :message message})))
            ))
  }
   :db/id #db/id[:db.part/backend]}
